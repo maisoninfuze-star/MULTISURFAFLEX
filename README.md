@@ -184,6 +184,29 @@ the bilingual arc may be the better one; worth confirming which is current.
   manufacturer's actual swatch photograph rather than a simulation, and emits a spec code
   (`GREIGE · ÉCOPAVAGE`) that auto-fills the quote form.
 
+### On phones
+
+- `viewport` meta with `viewport-fit=cover` — without it a phone lays the page out at ~980 px
+  and zooms out. The artifact viewer injects its own, so this only shows up on a real host.
+- A fixed **action bar** below 768 px: tap-to-call `438 530-2020` and jump to the quote form.
+  For a contractor, calling is the conversion — it should never be more than one tap away.
+- Every interactive target clears 40 px; buttons, chips and the language toggle clear 44–48.
+- Form fields are 16 px, below which iOS zooms the page in on focus.
+- `svh` rather than `vh` for the hero, so the collapsing browser chrome does not clip it.
+- `touch-action: manipulation` to drop the 300 ms tap delay, and a branded tap highlight.
+
+### Photography
+
+The job photos were shot on phones over several years and vary in white balance and exposure.
+They are corrected on a **neutral-referenced** basis: the illuminant is estimated only from
+genuinely low-saturation highlights — concrete, siding, sky — and the level stretch runs on
+luminance rather than per channel.
+
+This matters. A standard grey-world balance reads these frames as "too warm", because most of
+the frame *is* the tan surface, and neutralises the product's own colour. The first pass did
+exactly that and had to be thrown away. **The surface colour is the thing being sold and is
+never adjusted.**
+
 Tested clean from **360 px to 1440 px**, including with the device set to dark mode.
 
 ---
