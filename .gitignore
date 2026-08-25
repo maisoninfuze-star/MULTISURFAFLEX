@@ -1,0 +1,10 @@
+# local dev-server config, contains machine-specific absolute paths
+.claude/
+
+# macOS
+.DS_Store
+
+# scratch
+_verify.html
+_sheet.html
+*.tmp
