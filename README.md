@@ -125,6 +125,17 @@ Rivière-des-Prairies–Pointe-aux-Trembles, Montréal and Greater Montréal.
 
 ## How the page works
 
+### Typefaces
+
+| Role | Face | Why |
+|---|---|---|
+| Display | **Bricolage Grotesque** | Variable width and optical size; real character in the letterforms, and the accented caps sit properly rather than being squeezed |
+| Body | **Instrument Sans** | Clean humanist sans that suits the blue/white palette; a serif read bookish against it |
+| Spec labels and data | **Martian Mono** | Wide, engineered, tabular — carries the granulometry, ratios and blend codes |
+
+Bricolage tops out at `wdth 100` (Archivo went to 125), so the width settings were re-tuned
+rather than carried over and silently clamped.
+
 Bilingual FR/EN throughout — every string, including generated content, number formatting
 (`9,5` vs `9.5`) and `<html lang>`. French is the default.
 
