@@ -170,6 +170,13 @@ Interactive pieces:
   (arrow keys, Escape, focus returns to the thumbnail).
 - **Logo** — the mark is a tire, so it also takes a turn in the nav on arrival and half a turn
   on hover.
+
+**On logo resolution:** the best raster available is 147px, recovered from the archived Wix
+site's lockup (the Instagram avatar was only 128px, and Wix's larger renders are token-gated
+now). Nothing on the page draws it above that: the splash mark is set to 73px and the wordmark
+to 194px, which is exactly 1:1 at 2x DPR. The scale in the splash is carried by the SVG ring,
+which is vector and sharp at any size. **If the original vector (AI/EPS/SVG) turns up, the mark
+can be made as large as we like** — that is the only thing holding it back.
 - **Blend configurator** — surface type and one of the six blends. The preview tiles the
   manufacturer's actual swatch photograph rather than a simulation, and emits a spec code
   (`GREIGE · ÉCOPAVAGE`) that auto-fills the quote form.
@@ -188,7 +195,9 @@ assets/hero-source.jpg  full-resolution hero source (4032 × 2268)
 assets/projects/        the three project photographs, as embedded
 assets/gallery/         the twelve gallery photographs, full resolution
 assets/swatches/        the six factory colour swatches, full resolution
-assets/logo.png         company logo mark, cleaned and cut to a circle
+assets/logo.png         the roundel, cut to a circle (147px — the best available)
+assets/logo-wordmark.png  "Multisurfaflex / PAVAGE ÉCORESPONSABLE" wordmark (388px)
+assets/logo-lockup.png  the full horizontal lockup as recovered (600x315)
 ```
 
 `assets/` is provided for future edits — `concept.html` already embeds everything it needs and
