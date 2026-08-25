@@ -25,6 +25,7 @@ toggle that highlights every placeholder region at once.
 | Item | Notes |
 |---|---|
 | Project areas and cities | Each project tile needs its municipality and square footage attached |
+| Photo vetting | Frames were checked for house numbers, faces and third-party signage — worth a second pass by someone who knows the jobs |
 | EPDM thickness and warranty | Marked "à confirmer" in the configurator |
 | Email address | None found in any public listing |
 | Years in business | Domain registered 2018; not confirmed |
@@ -121,6 +122,9 @@ Interactive pieces:
 - **Before / after** — draggable and keyboard accessible; both states drawn procedurally.
 - **Application cross-sections** — real layer build-ups per application, with the product
   (Écopavage or EPDM) declared for each.
+- **Gallery** — twelve more jobs in a grid, each opening in a keyboard-navigable lightbox
+  (arrow keys, Escape, focus returns to the thumbnail).
+- **Logo** — the mark is a tire, so it takes one turn on arrival and half a turn on hover.
 - **Blend configurator** — surface type and one of the six blends. The preview tiles the
   manufacturer's actual swatch photograph rather than a simulation, and emits a spec code
   (`GREIGE · ÉCOPAVAGE`) that auto-fills the quote form.
@@ -137,6 +141,7 @@ index.html              redirect, so GitHub Pages serves the site at the repo ro
 assets/hero.jpg         hero image as embedded in the page (1800 px)
 assets/hero-source.jpg  full-resolution hero source (4032 × 2268)
 assets/projects/        the three project photographs, as embedded
+assets/gallery/         the twelve gallery photographs, full resolution
 assets/swatches/        the six factory colour swatches, full resolution
 assets/logo.png         company logo mark, cleaned and cut to a circle
 ```
