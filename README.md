@@ -24,9 +24,7 @@ toggle that highlights every placeholder region at once.
 
 | Item | Notes |
 |---|---|
-| Project photography | Three project tiles use generated textures. Real photos exist on the company Instagram. |
-| Project areas (m² / ft²) | Currently shown as `— m²` |
-| Hero photograph | **Currently AI-generated art direction, not a real job.** Must be replaced. |
+| Project areas and cities | Each project tile needs its municipality and square footage attached |
 | EPDM thickness and warranty | Marked "à confirmer" in the configurator |
 | Email address | None found in any public listing |
 | Years in business | Domain registered 2018; not confirmed |
@@ -78,17 +76,21 @@ included in this repo — it is GoRubber's document, not ours.
 
 ### Colour system
 
-Four solid colours — Noir, Gris, Beige, Brun — and four named factory blends at published ratios:
+The six named blends the company actually sells. Every hex below was sampled from the
+manufacturer's own swatch photography, held in `assets/swatches/`.
 
-| Blend | Mix |
+| Blend | Sampled |
 |---|---|
-| GREIGE | 50 % gris / 50 % beige |
-| MOKA | 50 % brun / 50 % beige |
-| GRIGIO | 50 % gris / 50 % noir |
-| ONYX | 100 % noir |
+| CARAMEL | `#8C7560` |
+| TOPAZ | `#847263` |
+| GRIGIO | `#69717C` |
+| GREIGE | `#6A635F` |
+| MOCHA | `#71594B` |
+| ONYX | `#464850` |
 
-The manufacturer's full catalogue is wider (red, green, blue, Eggshell). It was trimmed to the
-four tones actually visible in the company's own project photography.
+The wider catalogue also runs twelve numbered CSBR codes (CSBR-60 through CSBR-75), including
+reds, greens and blues. The site shows only the six named blends, which cover the work in the
+company's own project archive.
 
 ### Service area
 
@@ -103,10 +105,13 @@ Rivière-des-Prairies–Pointe-aux-Trembles, Montréal and Greater Montréal.
 Bilingual FR/EN throughout — every string, including generated content, number formatting
 (`9,5` vs `9.5`) and `<html lang>`. French is the default.
 
-All imagery apart from the hero is **drawn procedurally on canvas**: a seeded granule renderer
-scatters irregular coloured polygons in a binder matrix. This is honest to the product — the
-surface genuinely is coloured granules bound in polyurethane — and it means the cross-sections,
-before/after slider and project tiles need no photography to be accurate.
+Photography is the company's own throughout — hero, project tiles — and the colour swatches are
+the manufacturer's factory samples.
+
+The cross-sections and the before/after slider are **drawn procedurally on canvas**: a seeded
+granule renderer scatters irregular coloured polygons in a binder matrix. This is honest to the
+product — the surface genuinely is coloured granules bound in polyurethane — and it lets those
+two diagrams stay accurate without needing a photograph of every build-up.
 
 Interactive pieces:
 
@@ -116,8 +121,9 @@ Interactive pieces:
 - **Before / after** — draggable and keyboard accessible; both states drawn procedurally.
 - **Application cross-sections** — real layer build-ups per application, with the product
   (Écopavage or EPDM) declared for each.
-- **Blend configurator** — surface type × colours × ratio, live granule re-render, emitting a
-  spec code (`GREIGE · GRI 50 / BEI 50 · ÉCOPAVAGE`) that auto-fills the quote form.
+- **Blend configurator** — surface type and one of the six blends. The preview tiles the
+  manufacturer's actual swatch photograph rather than a simulation, and emits a spec code
+  (`GREIGE · ÉCOPAVAGE`) that auto-fills the quote form.
 
 Tested clean from **360 px to 1440 px**, in both light and dark themes.
 
@@ -129,7 +135,9 @@ Tested clean from **360 px to 1440 px**, in both light and dark themes.
 concept.html            the site — self-contained, this is the deliverable
 index.html              redirect, so GitHub Pages serves the site at the repo root
 assets/hero.jpg         hero image as embedded in the page (1800 px)
-assets/hero-source-2k.png   full-resolution hero source (2752 × 1536)
+assets/hero-source.jpg  full-resolution hero source (4032 × 2268)
+assets/projects/        the three project photographs, as embedded
+assets/swatches/        the six factory colour swatches, full resolution
 assets/logo.png         company logo mark, cleaned and cut to a circle
 ```
 
