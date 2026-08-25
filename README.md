@@ -144,8 +144,14 @@ rather than carried over and silently clamped.
 Bilingual FR/EN throughout — every string, including generated content, number formatting
 (`9,5` vs `9.5`) and `<html lang>`. French is the default.
 
-Photography is the company's own throughout — hero, project tiles — and the colour swatches are
-the manufacturer's factory samples.
+**The hero is generated, not a real job.** It was produced with fal (`flux-pro/v1.1-ultra`) as
+art direction after the client rejected the photographed hero; the prompt is kept in
+`assets/hero-prompt.txt` so it can be re-run or handed to a photographer as a brief. It must be
+replaced with real photography before launch, and the footer notice on the page says so.
+
+Every other photograph is the company's own, and the colour swatches are the manufacturer's
+factory samples. The driveway that previously served as the hero was moved into the gallery
+rather than dropped.
 
 The cross-sections and the before/after slider are **drawn procedurally on canvas**: a seeded
 granule renderer scatters irregular coloured polygons in a binder matrix. This is honest to the
