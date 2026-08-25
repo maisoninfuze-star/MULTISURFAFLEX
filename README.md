@@ -166,8 +166,14 @@ Interactive pieces:
   `prefers-reduced-motion` — so there is never a flash either way. Tap to skip; a failsafe
   removes it regardless at 5.2 s. `#intro` replays it, `#introhold` freezes it for review.
   The hero's own reveal is held back until the overlay lifts, so it is never wasted behind it.
-- **Gallery** — twelve more jobs in a grid, each opening in a keyboard-navigable lightbox
-  (arrow keys, Escape, focus returns to the thumbnail).
+- **Gallery** — a filterable grid with a category menu (Driveways, Pool surrounds, Balconies
+  and patios, Sidewalks, Interior), live counts per category, and a keyboard-navigable
+  lightbox (arrow keys, Escape, focus returns to the thumbnail). The lightbox walks the
+  *filtered* set, so "2 / 4" means the second of four driveways, not of the whole library.
+
+  **Adding photos:** append the base64 to `GALLERY` and a matching entry to `GAL_CAP` with
+  `{c: category, fr: caption, en: caption}`. Counts, the menu and the lightbox all follow
+  automatically; a category with no photos hides itself. Categories live in `GAL_CATS`.
 - **Logo** — the mark is a tire, so it also takes a turn in the nav on arrival and half a turn
   on hover.
 
