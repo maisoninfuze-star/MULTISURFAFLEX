@@ -172,7 +172,12 @@ Interactive pieces:
   `prefers-reduced-motion` — so there is never a flash either way. Tap to skip; a failsafe
   removes it regardless at 5.2 s. `#intro` replays it, `#introhold` freezes it for review.
   The hero's own reveal is held back until the overlay lifts, so it is never wasted behind it.
-- **Gallery** — a filterable grid with a category menu (Driveways, Pool surrounds, Balconies
+The site has **two views**: the home page, and the gallery. The nav's *Galerie* link swaps
+between them rather than scrolling to a section — `#gallery` in the URL opens the gallery
+directly, and the brand mark returns home. There is no build step or router involved; it is a
+`data-view` attribute on `<body>` and two CSS rules.
+
+- **Gallery** — its own view, not a home-page section: a filterable grid with a category menu (Driveways, Pool surrounds, Balconies
   and patios, Sidewalks, Interior), live counts per category, and a keyboard-navigable
   lightbox (arrow keys, Escape, focus returns to the thumbnail). The lightbox walks the
   *filtered* set, so "2 / 4" means the second of four driveways, not of the whole library.
