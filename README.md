@@ -75,19 +75,41 @@ included in this repo — it is GoRubber's document, not ours.
 - **EPDM** — synthetic granulate. Requires a firm, non-granular base. The indoor and
   fine-finish product.
 
+### Site palette
+
+White ground, blue structure, green accent — the GoRubber EPDM palette, sampled from
+`gorubber.net/surfaces-epdm`, at the client's request.
+
+| Role | Light | Dark |
+|---|---|---|
+| Ground | `#FFFFFF` | `#0B1B27` |
+| Ink | `#0F2437` | `#E8F0F6` |
+| Accent (links, buttons) | `#0064AD` | `#47B8E7` |
+| Green mark | `#80CE48` | `#80CE48` |
+| Green as text | `#457A1E` | `#8FD95A` |
+
+Their lime `#80CE48` is only **1.94:1** on white, so it is used as a graphic mark and never as
+small text on the light ground — `--lime-ink` stands in where green has to be read. Their blue
+clears 6.1:1 and carries the links and buttons. Every pairing in both themes was checked at
+4.5:1 or better.
+
+The photography panels — hero, cross-sections, configurator, project tiles, quote, splash —
+stay dark in both themes, so the product always sits on a consistent ground.
+
 ### Colour system
 
-The six named blends the company actually sells. Every hex below was sampled from the
-manufacturer's own swatch photography, held in `assets/swatches/`.
+The six named blends the company actually sells. The mixes below are transcribed from the
+label printed on each factory swatch, in `assets/swatches/`; the hexes are sampled from the
+granulate in the same photographs.
 
-| Blend | Sampled |
-|---|---|
-| CARAMEL | `#8C7560` |
-| TOPAZ | `#847263` |
-| GRIGIO | `#69717C` |
-| GREIGE | `#6A635F` |
-| MOCHA | `#71594B` |
-| ONYX | `#464850` |
+| Blend | Published mix | Sampled |
+|---|---|---|
+| CARAMEL | 80 % CSBR tan · 20 % EPDM beige | `#8C7560` |
+| TOPAZ | 80 % CSBR tan · 20 % EPDM eggshell | `#847263` |
+| GRIGIO | 70 % CSBR grey · 30 % CSBR black | `#69717C` |
+| GREIGE | 50 % CSBR grey · 50 % CSBR tan | `#6A635F` |
+| MOCHA | 50 % CSBR brown · 50 % CSBR tan | `#71594B` |
+| ONYX | 100 % CSBR black | `#464850` |
 
 The wider catalogue also runs twelve numbered CSBR codes (CSBR-60 through CSBR-75), including
 reds, greens and blues. The site shows only the six named blends, which cover the work in the
