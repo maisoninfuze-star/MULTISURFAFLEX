@@ -80,13 +80,18 @@ included in this repo — it is GoRubber's document, not ours.
 White ground, blue structure, green accent — the GoRubber EPDM palette, sampled from
 `gorubber.net/surfaces-epdm`, at the client's request.
 
-| Role | Light | Dark |
-|---|---|---|
-| Ground | `#FFFFFF` | `#0B1B27` |
-| Ink | `#0F2437` | `#E8F0F6` |
-| Accent (links, buttons) | `#0064AD` | `#47B8E7` |
-| Green mark | `#80CE48` | `#80CE48` |
-| Green as text | `#457A1E` | `#8FD95A` |
+| Role | Value |
+|---|---|
+| Ground | `#FFFFFF` |
+| Ink | `#0F2437` |
+| Accent (links, buttons) | `#0064AD` |
+| Green mark | `#80CE48` |
+| Green as text | `#457A1E` |
+
+**There is no automatic dark mode.** The client asked for white, so the design commits to it:
+a visitor whose device is in dark mode still gets the white page (`color-scheme: light`).
+The photography panels carry their own dark palette explicitly, which is what stops the page
+looking washed out.
 
 Their lime `#80CE48` is only **1.94:1** on white, so it is used as a graphic mark and never as
 small text on the light ground — `--lime-ink` stands in where green has to be read. Their blue
@@ -169,7 +174,7 @@ Interactive pieces:
   manufacturer's actual swatch photograph rather than a simulation, and emits a spec code
   (`GREIGE · ÉCOPAVAGE`) that auto-fills the quote form.
 
-Tested clean from **360 px to 1440 px**, in both light and dark themes.
+Tested clean from **360 px to 1440 px**, including with the device set to dark mode.
 
 ---
 

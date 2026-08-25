@@ -18,7 +18,10 @@ try {
 <style>
 /* ══ tokens ══ white ground, blue structure, green accent — the GoRubber
    EPDM palette, sampled from gorubber.net/surfaces-epdm.
-   Light is the design default here; dark is a full re-spec.
+   The client asked for white, so this design commits to light: there is no
+   automatic dark flip. A visitor whose device is in dark mode still gets the
+   white page. The photography panels carry their own dark palette explicitly,
+   which is what keeps the page from looking washed out.
    Contrast notes: their blue #0064AD clears 6.1:1 on white, so it carries the
    links and buttons. Their lime #80CE48 is only 1.9:1 on white, so it is a
    graphic mark, never small text — where green has to read as text on white,
@@ -54,50 +57,8 @@ try {
   --wrap:1280px;
   --pad:clamp(20px,5vw,56px);
   --rail:132px;
-}
-@media (prefers-color-scheme:dark){
-  :root:not([data-theme="light"]){
-    --ground:#0B1B27;
-    --surface:#102534;
-    --raised:#143046;
-    --sunk:#071620;
-    --ink:#E8F0F6;
-    --ink-2:#A8BECD;
-    --ink-3:#7A93A5;
-    --line:#1C3242;
-    --line-2:#2A4658;
-    --terra:#47B8E7;
-    --terra-deep:#0064AD;
-    --terra-wash:#08283C;
-    --lime:#80CE48;
-    --lime-ink:#8FD95A;
-    --sky:#47B8E7;
-    --forest:#8FD95A;
-    --forest-wash:#0E2416;
-    --sand:#C7A470;
-    --slate:#8CA6B8;
-  }
-}
-:root[data-theme="dark"]{
-  --ground:#0B1B27;
-  --surface:#102534;
-  --raised:#143046;
-  --sunk:#071620;
-  --ink:#E8F0F6;
-  --ink-2:#A8BECD;
-  --ink-3:#7A93A5;
-  --line:#1C3242;
-  --line-2:#2A4658;
-  --terra:#47B8E7;
-  --terra-deep:#0064AD;
-  --terra-wash:#08283C;
-  --lime:#80CE48;
-  --lime-ink:#8FD95A;
-  --sky:#47B8E7;
-  --forest:#8FD95A;
-  --forest-wash:#0E2416;
-  --sand:#C7A470;
-  --slate:#8CA6B8;
+
+  color-scheme:light;
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
