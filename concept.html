@@ -250,6 +250,31 @@ body.showph canvas{outline:1px dashed var(--terra-deep)}
 }
 @media(max-width:860px){ .hero-hint{display:none} }
 
+/* ── a 16:9 photograph inside a tall box loses most of the frame to the crop:
+   about two thirds on a phone, and still ~40% on a portrait tablet. So the
+   hero stacks whenever the viewport is narrow *or* too tall for the picture —
+   the image runs full width at its own aspect ratio and the copy sits beneath
+   it on the navy ground, which is how the whole frame actually gets seen. ── */
+@media (max-width:900px), (max-aspect-ratio:5/4){
+  .hero{display:flex; flex-direction:column}
+  .hero-c{
+    position:relative; inset:auto; width:100%; height:auto;
+    aspect-ratio:16/9; display:block; flex:0 0 auto;
+  }
+  /* the copy is no longer over the picture, so the scrim only has to blend
+     the bottom edge into the ground behind it */
+  .hero-veil{
+    inset:auto 0 0 0; height:38%;
+    background:linear-gradient(180deg, rgba(11,27,39,0) 0%, rgba(11,27,39,.55) 62%, #0B1B27 100%);
+  }
+  .hero-in{min-height:0; padding:26px 0 0}
+  .hero h1{max-width:none; text-shadow:none}
+  .hero-sub{text-shadow:none; max-width:none}
+  .hero-txt{max-width:none}
+  .hero-spec{margin-top:26px; background:rgba(6,16,24,.5)}
+  .hero-hint{display:none}
+}
+
 /* ══ proof strip ══ */
 .proof{display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:1px; background:var(--line)}
 .proof>div{background:var(--ground); padding:18px 20px 20px}
@@ -664,6 +689,23 @@ body[data-view="home"] #gallery{display:none}
 .actionbar a:active{filter:brightness(.94)}
 .actionbar svg{width:17px; height:17px; flex:0 0 17px}
 @media (prefers-reduced-motion:reduce){ .actionbar a{transition:none} }
+
+/* ── touch: size targets by input device, not by viewport width. A 834px
+   iPad is a touch screen with twenty 16px-tall footer links on it. ── */
+@media (pointer:coarse){
+  .foot-col ul{gap:0}
+  .foot-col a{display:inline-flex; align-items:center; min-height:44px; padding:4px 0}
+  .lang button{min-height:44px; min-width:44px; justify-content:center}
+  .lang{align-items:stretch}
+  .cta{min-height:44px}
+  .brand{min-height:44px}
+  .nav-links a{min-height:44px; display:inline-flex; align-items:center}
+  .galmenu button{min-height:44px}
+  .svc li{min-height:36px; display:inline-flex; align-items:center}
+  /* the two phone numbers are the most valuable taps on the page */
+  #quotePhone a{display:inline-flex; align-items:center; min-height:44px}
+  #quotePhone{line-height:1.35}
+}
 
 /* ══ reveal ══ */
 .rv{opacity:0; transform:translateY(18px); transition:opacity .7s cubic-bezier(.2,.7,.3,1), transform .7s cubic-bezier(.2,.7,.3,1)}

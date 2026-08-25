@@ -224,6 +224,16 @@ the frame *is* the tan surface, and neutralises the product's own colour. The fi
 exactly that and had to be thrown away. **The surface colour is the thing being sold and is
 never adjusted.**
 
+**The hero stacks on phones and portrait tablets.** A 16:9 photograph inside a tall portrait
+box loses roughly two thirds of the frame to the crop, so below 900px — or whenever the viewport
+is taller than 5:4 — the picture runs full width at its own aspect ratio and the copy sits
+underneath it on the navy ground. Measured crop is 0% on every phone and portrait tablet, and
+0–5% on desktop.
+
+Touch targets are sized by `@media (pointer: coarse)` rather than by viewport width, because an
+834px iPad is a touch screen: sizing by breakpoint alone left twenty 16px-tall footer links, a
+26px language toggle and both tap-to-call numbers under-sized at that width.
+
 Tested clean from **360 px to 1440 px**, including with the device set to dark mode.
 
 ---
