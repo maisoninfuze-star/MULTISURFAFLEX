@@ -122,9 +122,16 @@ Interactive pieces:
 - **Before / after** — draggable and keyboard accessible; both states drawn procedurally.
 - **Application cross-sections** — real layer build-ups per application, with the product
   (Écopavage or EPDM) declared for each.
+- **Opening splash** — the mark rolls in behind a rim that draws itself and a tread ring that
+  runs, then the name rises and the overlay lifts. It ships in the HTML so it owns the very
+  first paint, and a pre-paint script skips it on repeat views in the same session and under
+  `prefers-reduced-motion` — so there is never a flash either way. Tap to skip; a failsafe
+  removes it regardless at 5.2 s. `#intro` replays it, `#introhold` freezes it for review.
+  The hero's own reveal is held back until the overlay lifts, so it is never wasted behind it.
 - **Gallery** — twelve more jobs in a grid, each opening in a keyboard-navigable lightbox
   (arrow keys, Escape, focus returns to the thumbnail).
-- **Logo** — the mark is a tire, so it takes one turn on arrival and half a turn on hover.
+- **Logo** — the mark is a tire, so it also takes a turn in the nav on arrival and half a turn
+  on hover.
 - **Blend configurator** — surface type and one of the six blends. The preview tiles the
   manufacturer's actual swatch photograph rather than a simulation, and emits a spec code
   (`GREIGE · ÉCOPAVAGE`) that auto-fills the quote form.
