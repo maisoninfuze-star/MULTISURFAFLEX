@@ -68,12 +68,18 @@ included in this repo — it is GoRubber's document, not ours.
 | Service life | 25–30 yrs+ |
 | Installed | 25 years in Canada, 10+ in Québec |
 
-### Two product lines
+### Three product lines
 
 - **Écopavage** — recycled tire granulate. Bonds to asphalt, concrete, pavers, steel, roofing
   membrane, even bare gravel. Outdoor only, except stables and barns.
 - **EPDM** — synthetic granulate. Requires a firm, non-granular base. The indoor and
   fine-finish product.
+- **Polygranite** — a hybrid urethane polymer coating, not a granulate surfacing: two squeegee
+  coats over a URALASTIC 90 primer. It is the only one of the three that goes on a **vertical**
+  surface and the only one that bonds to **ceramic, wood and metal**, which makes it the
+  balcony, stair and foundation product. Data and the twenty colour hexes come from
+  Multiflexx (`groupemultiflex.com/revetement-polygranite`), the supplier; the swatch
+  photography is in `assets/swatches-polygranite/`.
 
 ### Site palette
 
@@ -172,7 +178,8 @@ Interactive pieces:
   `prefers-reduced-motion` — so there is never a flash either way. Tap to skip; a failsafe
   removes it regardless at 5.2 s. `#intro` replays it, `#introhold` freezes it for review.
   The hero's own reveal is held back until the overlay lifts, so it is never wasted behind it.
-The site has **two views**: the home page, and the gallery. The nav's *Galerie* link swaps
+The site has **five views**: the home page, one page per product (Écopavage, EPDM,
+Polygranite), and the gallery. The nav's *Galerie* link swaps
 between them rather than scrolling to a section — `#gallery` in the URL opens the gallery
 directly, and the brand mark returns home. There is no build step or router involved; it is a
 `data-view` attribute on `<body>` and two CSS rules.

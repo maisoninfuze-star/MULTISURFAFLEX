@@ -524,9 +524,35 @@ html:not(.intro-skip) body:has(.splash:not(.done)){overflow:hidden}
 }
 @media (prefers-reduced-motion:reduce){ .splash{display:none} }
 
+/* ══ service pages ══ */
+.pgrid{display:grid; gap:clamp(24px,4vw,44px)}
+@media(min-width:900px){ .pgrid{grid-template-columns:minmax(0,1fr) 330px; align-items:start} }
+.pg-h{margin:26px 0 12px; font-size:15px; letter-spacing:-.01em}
+.pg-main > .pg-h:first-child{margin-top:0}
+.pg-side{display:grid; gap:16px; position:sticky; top:82px}
+@media(max-width:899px){ .pg-side{position:static} }
+.pg-note{font-size:14px; color:var(--ink-3)}
+.swgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(104px,1fr)); gap:8px; margin-top:12px}
+.swcell{border:1px solid var(--line); background:var(--surface); padding:0 0 7px}
+.swcell i{display:block; height:52px; border-bottom:1px solid var(--line)}
+.swcell b{display:block; font-family:var(--f-m); font-size:8.5px; font-weight:600; letter-spacing:.07em; color:var(--ink-2); padding:6px 7px 0}
+.pgcards{display:grid; gap:14px; grid-template-columns:repeat(auto-fit,minmax(250px,1fr))}
+.pgcard{
+  display:grid; gap:9px; align-content:start; text-align:left; text-decoration:none;
+  border:1px solid var(--line); background:var(--surface); padding:20px 20px 22px; cursor:pointer;
+  color:var(--ink); transition:border-color .16s ease, transform .16s ease;
+}
+.pgcard:hover{border-color:var(--terra); transform:translateY(-2px)}
+.pgcard h3{font-size:19px}
+.pgcard p{margin:0; font-family:var(--f-b); font-size:14px; line-height:1.5; color:var(--ink-2)}
+.pgcard .m{color:var(--terra)}
+
 /* ══ views: the gallery is its own page, reached from the nav ══ */
-body[data-view="gallery"] [data-home]{display:none}
-body[data-view="home"] #gallery{display:none}
+
+/* exactly one view is on screen at a time */
+body:not([data-view="home"]) [data-home]{display:none}
+body:not([data-view="gallery"]) #gallery{display:none}
+body[data-view="home"] #product, body[data-view="gallery"] #product{display:none}
 .backhome{
   display:inline-flex; align-items:center; gap:8px; background:none; border:0; cursor:pointer;
   color:var(--terra); font-size:13.5px; font-weight:600;
@@ -735,10 +761,10 @@ body[data-view="home"] #gallery{display:none}
   <div class="nav-in">
     <a class="brand" href="#top"><img src="data:image/png;base64,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" alt="Multisurfaflex"><span class="brand-t"><b>MULTISURFAFLEX</b><span class="m" data-en="Écopavage &amp; EPDM" data-fr="Écopavage et EPDM">Écopavage et EPDM</span></span></a>
     <div class="nav-links">
-      <a href="#applications" data-en="Applications" data-fr="Applications">Applications</a>
-      <a href="#blend" data-en="Colours" data-fr="Couleurs">Couleurs</a>
-      <a href="#why" data-en="Comparison" data-fr="Comparatif">Comparatif</a>
-      <a href="#gallery" data-en="Gallery" data-fr="Galerie">Galerie</a>
+      <a href="#ecopavage" data-goto="ecopavage" data-en="Écopavage" data-fr="Écopavage">Écopavage</a>
+      <a href="#epdm" data-goto="epdm" data-en="EPDM" data-fr="EPDM">EPDM</a>
+      <a href="#polygranite" data-goto="polygranite" data-en="Polygranite" data-fr="Polygranite">Polygranite</a>
+      <a href="#gallery" data-goto="gallery" data-en="Gallery" data-fr="Galerie">Galerie</a>
     </div>
     <div class="lang" role="group" aria-label="Langue / Language">
       <button type="button" data-lang="fr" aria-pressed="true">FR</button>
@@ -759,7 +785,7 @@ body[data-view="home"] #gallery{display:none}
       <div class="hero-apps" id="heroApps"></div>
       <div class="hero-act">
         <a class="cta" href="#quote" data-en="Free quote" data-fr="Soumission gratuite">Soumission gratuite</a>
-        <a class="cta ghost" href="#blend" data-en="Design your blend" data-fr="Composez votre mélange">Composez votre mélange</a>
+        <a class="cta ghost" href="#products" data-en="See the products" data-fr="Voir les produits">Voir les produits</a>
       </div>
     </div>
     <div class="hero-spec">
@@ -798,30 +824,18 @@ body[data-view="home"] #gallery{display:none}
   </div>
 </section>
 
-<section class="sec" id="applications" data-home>
+<section class="sec" id="products" data-home>
   <div class="wrap">
     <div class="head rv">
-      <p class="m m-lab" data-en="02 / Applications" data-fr="02 / Applications">02 / Applications</p>
+      <p class="m m-lab" data-en="02 / Products" data-fr="02 / Produits">02 / Produits</p>
       <div class="head-b">
-        <h2 data-en="Two products. Every surface you walk on." data-fr="Deux produits. Toutes les surfaces que vous foulez.">Deux produits. Toutes les surfaces que vous foulez.</h2>
-        <div class="prose" data-en-html="&lt;p&gt;&lt;strong&gt;Écopavage&lt;/strong&gt; is recycled tire granulate and goes almost anywhere outdoors — it will even bond to a bare gravel base. &lt;strong&gt;EPDM&lt;/strong&gt; is synthetic granulate and needs a firm, non-granular base, which is what makes it the indoor and fine-finish product. Pick an application to see which one applies and how the layers stack up.&lt;/p&gt;" data-fr-html="&lt;p&gt;L’&lt;strong&gt;écopavage&lt;/strong&gt;, c’est du granulat de pneus recyclés : il se pose presque partout à l’extérieur, et adhère même à un simple fond de gravier. L’&lt;strong&gt;EPDM&lt;/strong&gt;, c’est du granulat synthétique : il exige une base ferme et non granulaire, ce qui en fait le produit d’intérieur et de finition fine. Choisissez une application pour voir lequel s’applique et comment les couches s’empilent.&lt;/p&gt;"><p>L’<strong>écopavage</strong>, c’est du granulat de pneus recyclés : il se pose presque partout à l’extérieur, et adhère même à un simple fond de gravier. L’<strong>EPDM</strong>, c’est du granulat synthétique : il exige une base ferme et non granulaire, ce qui en fait le produit d’intérieur et de finition fine. Choisissez une application pour voir lequel s’applique et comment les couches s’empilent.</p></div>
+        <h2 data-en="Three products, one idea." data-fr="Trois produits, une même idée.">Trois produits, une même idée.</h2>
+        <div class="prose" data-en-html="&lt;p&gt;All three are poured or laid over the surface that is already there. Which one applies comes down to what you are covering and whether it is flat.&lt;/p&gt;" data-fr-html="&lt;p&gt;Les trois se coulent ou s’appliquent sur la surface qui est déjà là. Lequel s’applique dépend de ce que vous recouvrez et de si c’est plat.&lt;/p&gt;"><p>Les trois se coulent ou s’appliquent sur la surface qui est déjà là. Lequel s’applique dépend de ce que vous recouvrez et de si c’est plat.</p></div>
       </div>
     </div>
-
-    <div class="rv">
-      <div class="tabs" role="tablist" id="appTabs" aria-label="Applications"></div>
-      <div class="app-panel" id="appPanel" role="tabpanel" tabindex="0">
-        <div class="app-vis">
-          <canvas id="xsCanvas" aria-hidden="true"></canvas>
-          <div class="xs-labels" id="xsLabels"></div>
-        </div>
-        <div class="app-body" id="appBody"></div>
-      </div>
-    </div>
+    <div class="pgcards rv" id="prodCards"></div>
   </div>
 </section>
-
-
 
 <section class="sec dark" id="why" data-home>
   <div class="wrap">
@@ -851,42 +865,29 @@ body[data-view="home"] #gallery{display:none}
   </div>
 </section>
 
-<section class="sec dark" id="blend" data-home>
+<section class="sec" id="product">
   <div class="wrap">
-    <div class="head rv">
-      <p class="m m-lab" data-en="05 / Colour" data-fr="05 / Couleur">05 / Couleur</p>
+    <div class="head">
+      <p class="m m-lab" id="pgEyebrow"></p>
       <div class="head-b">
-        <h2 data-en="A driveway doesn’t have to be black." data-fr="Une entrée n’est pas obligée d’être noire.">Une entrée n’est pas obligée d’être noire.</h2>
-        <div class="prose" data-en-html="&lt;p&gt;Asphalt comes in one colour. Écopavage granules are coloured all the way through, so the surface never needs sealing or staining — and a pale driveway runs cooler than a black one in July. Six factory blends cover almost every job we do. This is the last decision you make, not the first.&lt;/p&gt;" data-fr-html="&lt;p&gt;L’asphalte n’existe qu’en une seule couleur. Les granules d’écopavage sont teintes dans la masse : la surface n’a jamais besoin d’être scellée ni teinte — et une entrée pâle reste plus fraîche qu’une noire en juillet. Six mélanges d’usine couvrent presque tous nos chantiers. C’est la dernière décision à prendre, pas la première.&lt;/p&gt;"><p>L’asphalte n’existe qu’en une seule couleur. Les granules d’écopavage sont teintes dans la masse : la surface n’a jamais besoin d’être scellée ni teinte — et une entrée pâle reste plus fraîche qu’une noire en juillet. Six mélanges d’usine couvrent presque tous nos chantiers. C’est la dernière décision à prendre, pas la première.</p></div>
+        <button class="backhome" type="button" data-goto="home" data-en="← Back to the site" data-fr="← Retour au site">← Retour au site</button>
+        <h2 id="pgTitle"></h2>
+        <div class="prose" id="pgLede"></div>
       </div>
     </div>
-
-    <div class="cfg rv">
-      <div class="cfg-vis">
-        <canvas id="cfgCanvas" aria-hidden="true"></canvas>
-        <p class="cfg-scale m" id="cfgScale"></p>
-        <p class="cfg-code" id="cfgCode"></p>
+    <div class="pgrid">
+      <div class="pg-main">
+        <h3 class="pg-h" data-en="Where it goes" data-fr="Où on l’installe">Où on l’installe</h3>
+        <ul class="svc" id="pgApps"></ul>
+        <h3 class="pg-h" data-en="What it bonds to" data-fr="Sur quoi il adhère">Sur quoi il adhère</h3>
+        <ul class="svc" id="pgSubs"></ul>
+        <div id="pgColours"></div>
       </div>
-      <div class="cfg-pane">
-        <div class="fld">
-          <p class="m m-lab"><span data-en="Surface" data-fr="Surface">Surface</span></p>
-          <div class="chips" id="cfgSurface"></div>
-        </div>
-        <div class="prodbox">
-          <div class="prod-h" id="cfgProd"></div>
-          <p class="prod-n" id="cfgProdNote"></p>
-        </div>
-        <div class="fld">
-          <p class="m m-lab"><span data-en="Factory blends" data-fr="Mélanges d’usine">Mélanges d’usine</span><b>6</b></p>
-          <div class="blends" id="cfgBlends"></div>
-        </div>
-<button class="tog" type="button" id="cfgBorder" aria-pressed="false">
-          <b data-en="Decorative border" data-fr="Bordure décorative">Bordure décorative</b>
-          <i aria-hidden="true"></i>
-        </button>
-        <div class="readout" id="cfgReadout"></div>
-        <a class="cta" href="#quote" id="cfgSend" style="justify-content:center" data-en="Request a sample in this blend" data-fr="Demander un échantillon de ce mélange">Demander un échantillon de ce mélange</a>
-      </div>
+      <aside class="pg-side">
+        <div class="readout" id="pgSpecs"></div>
+        <p class="prose pg-note" id="pgNote"></p>
+        <a class="cta" href="#quote" data-goto="quote" style="justify-content:center" data-en="Free quote" data-fr="Soumission gratuite">Soumission gratuite</a>
+      </aside>
     </div>
   </div>
 </section>
@@ -950,7 +951,7 @@ body[data-view="home"] #gallery{display:none}
           <label class="inp"><span class="m m-lab" data-en="Application" data-fr="Application">Application</span><select name="application" id="qApp"></select></label>
           <label class="inp"><span class="m m-lab" data-en="Approx. area (ft²)" data-fr="Superficie approx. (pi²)">Superficie approx. (pi²)</span><input type="number" name="area" min="0" inputmode="numeric"></label>
         </div>
-        <label class="inp"><span class="m m-lab" data-en="Blend code" data-fr="Code de mélange">Code de mélange</span><input type="text" name="blend" id="qBlend" readonly></label>
+        <label class="inp"><span class="m m-lab" data-en="Colour, if you have one in mind" data-fr="Couleur, si vous en avez une en tête">Couleur, si vous en avez une en tête</span><input type="text" name="blend" id="qBlend" data-en-ph="GREIGE, CHARCOAL, Sahara…" data-fr-ph="GREIGE, CHARCOAL, Sahara…"></label>
         <label class="inp"><span class="m m-lab" data-en="Current surface and condition" data-fr="Surface actuelle et état">Surface actuelle et état</span><textarea name="notes" data-en-ph="Poured concrete, about 12 years old, hairline cracking along the middle…" data-fr-ph="Béton coulé, environ 12 ans, fissures fines au centre…"></textarea></label>
         <button class="cta" type="submit" style="justify-content:center" data-en="Send request" data-fr="Envoyer la demande">Envoyer la demande</button>
         <p class="q-note" id="qNote" data-en="Concept demo — this form does not submit anywhere yet." data-fr="Démo de concept — ce formulaire n’envoie encore rien.">Démo de concept — ce formulaire n’envoie encore rien.</p>
@@ -1040,21 +1041,11 @@ var BLENDS = [
 var SWIMG = {};
 Object.keys(SW).forEach(function(k){
   var i = new Image();
-  i.onload = function(){ SWIMG[k] = i; if(typeof drawCfg === "function") drawCfg(); };
+  i.onload = function(){ SWIMG[k] = i; };
   i.src = "data:image/jpeg;base64," + SW[k];
 });
 
 /* configurator surface types, each tied to the product that actually suits it */
-var SURFACES = [
-  {k:"drive",  fr:"Entrée / stationnement", en:"Driveway / parking", prod:"eco",  g:2.2, fov:0.50},
-  {k:"walk",   fr:"Trottoir / allée",       en:"Sidewalk / walkway", prod:"eco",  g:2.2, fov:0.50},
-  {k:"play",   fr:"Aire de jeux",           en:"Play area",          prod:"eco",  g:2.6, fov:0.58},
-  {k:"stable", fr:"Écurie / étable",        en:"Stable / barn",      prod:"eco",  g:2.8, fov:0.58},
-  {k:"pool",   fr:"Contour de piscine",     en:"Pool surround",      prod:"epdm", g:1.8, fov:0.42},
-  {k:"patio",  fr:"Patio / balcon / marches", en:"Patio / balcony / steps", prod:"epdm", g:2.0, fov:0.46},
-  {k:"garage", fr:"Garage / gym",           en:"Garage / gym floor", prod:"epdm", g:2.4, fov:0.50}
-];
-function surfOf(){ for(var i=0;i<SURFACES.length;i++) if(SURFACES[i].k===CFG.surf) return SURFACES[i]; return SURFACES[0]; }
 
 /* the two product lines, with their published characteristics */
 var PRODUCTS = {
@@ -1085,8 +1076,77 @@ var PRODUCTS = {
     ],
     fr_sub:"Exige une base ferme et non granulaire. C’est le produit pour les surfaces intérieures et pour tout ce qui demande une finition plus fine.",
     en_sub:"Requires a firm, non-granular base. This is the product for interior surfaces and anywhere a finer finish is called for."
+  },
+  poly:{
+    fr:"Polygranite", en:"Polygranite",
+    fr_t:"Revêtement polymère uréthane", en_t:"Urethane polymer coating",
+    rows:[
+      {fr:"Type", en:"Type", fr_v:"Polymère uréthane hybride, mono-composant", en_v:"Hybrid urethane polymer, single component", src:1},
+      {fr:"Apprêt", en:"Primer", v:"URALASTIC 90", src:1},
+      {fr:"Application", en:"Application", fr_v:"Deux couches à la raclette", en_v:"Two squeegee coats", src:1},
+      {fr:"Supports", en:"Substrates", fr_v:"Béton, céramique, bois, métal", en_v:"Concrete, ceramic, wood, metal", src:1},
+      {fr:"Orientation", en:"Orientation", fr_v:"Horizontale et verticale", en_v:"Horizontal and vertical", src:1},
+      {fr:"Couleurs", en:"Colours", fr_v:"10 standard · 10 sur commande", en_v:"10 standard · 10 special order", src:1}
+    ],
+    fr_sub:"Le seul des trois qui monte sur une surface verticale et qui adhère à la céramique, au bois et au métal. C’est le produit des balcons, des escaliers et des fondations.",
+    en_sub:"The only one of the three that climbs a vertical surface and bonds to ceramic, wood and metal. This is the product for balconies, stairs and foundations."
   }
 };
+
+/* Polygranite palette. Every hex sampled from the supplier's swatch
+   photography; the names are theirs. */
+var POLY_STD = [
+  {n:"GRAVEL", hex:"#A59D95"}, {n:"CHARCOAL", hex:"#7F7E7A"},
+  {n:"THUNDER GREY", hex:"#7C7973"}, {n:"MIDNIGHT", hex:"#595551"},
+  {n:"TAUPE", hex:"#B2A497"}, {n:"SAHARA", hex:"#A59588"},
+  {n:"LIGHT BROWN", hex:"#97806C"}, {n:"DARK BROWN", hex:"#635E54"},
+  {n:"LIGHT ROCK", hex:"#A4A29F"}, {n:"NATURAL GREY", hex:"#A2A3AC"}
+];
+var POLY_SPECIAL = [
+  {n:"CASTLE ROCK", hex:"#746D64"}, {n:"SMOKE", hex:"#9C9FA8"},
+  {n:"GRANITE", hex:"#B8B5B7"}, {n:"PEBBLE", hex:"#978975"},
+  {n:"GREIGE", hex:"#A8ABA4"}, {n:"ORANGE", hex:"#A28F7E"},
+  {n:"LIME", hex:"#9BA191"}, {n:"ROUGE", hex:"#BA7872"},
+  {n:"OCEAN", hex:"#7295AF"}, {n:"AQUA", hex:"#6F969C"}
+];
+
+/* the three service pages, each driven from the product data above */
+var PAGES = {
+  ecopavage:{
+    prod:"eco",
+    fr_h:"Écopavage", en_h:"Écopavage",
+    fr_lede:"Du granulat de pneus recyclés, lié au polyuréthane et coulé directement sur la surface que vous avez déjà — en la nivelant au passage. C’est le produit des entrées, des stationnements et des allées, et il se pose sur à peu près tout ce qui est horizontal.",
+    en_lede:"Recycled tire granulate, bound in polyurethane and poured straight over the surface you already have — levelling it as it goes. This is the product for driveways, parking areas and walkways, and it bonds to almost any horizontal surface.",
+    apps:{fr:["Entrée de garage","Stationnement","Trottoir","Allée piétonne","Sentier de jardin","Ruelle verte","Aire de jeux","Écurie et étable","Stationnement commercial","Surface municipale","Piste cyclable","Réparation de nids-de-poule"],
+          en:["Driveway","Parking area","Sidewalk","Walkway","Garden path","Green alley","Play area","Stable and barn","Commercial parking","Municipal surface","Bike path","Pothole repair"]},
+    subs:{fr:["Asphalte","Béton","Pavé-uni","Acier","Membrane de toiture","Fond de gravier"],
+          en:["Asphalt","Concrete","Pavers","Steel","Roofing membrane","Gravel base"]},
+    colours:"blends"
+  },
+  epdm:{
+    prod:"epdm",
+    fr_h:"EPDM", en_h:"EPDM",
+    fr_lede:"Du granulat de caoutchouc synthétique, plus fin et disponible en teintes plus claires. Il exige une base ferme et non granulaire, ce qui en fait le produit des contours de piscine, des terrasses et des planchers intérieurs.",
+    en_lede:"Synthetic rubber granulate, finer and available in paler tones. It needs a firm, non-granular base, which makes it the product for pool surrounds, terraces and interior floors.",
+    apps:{fr:["Contour de piscine","Plage de piscine","Terrasse","Patio","Balcon","Marches et escalier","Plancher de garage","Plancher de gym","Vestiaire","Aire de jeux intérieure"],
+          en:["Pool surround","Pool deck","Terrace","Patio","Balcony","Steps and staircase","Garage floor","Gym floor","Locker room","Indoor play area"]},
+    subs:{fr:["Béton","Pavé-uni","Acier","Membrane de toiture"],
+          en:["Concrete","Pavers","Steel","Roofing membrane"]},
+    colours:"blends"
+  },
+  polygranite:{
+    prod:"poly",
+    fr_h:"Polygranite", en_h:"Polygranite",
+    fr_lede:"Un polymère uréthane hybride appliqué à la raclette en deux couches, sur un apprêt URALASTIC 90. C’est le seul des trois qui monte sur une surface verticale et qui adhère à la céramique, au bois et au métal — donc le produit des balcons, des escaliers et des fondations.",
+    en_lede:"A hybrid urethane polymer laid down in two squeegee coats over a URALASTIC 90 primer. It is the only one of the three that climbs a vertical surface and bonds to ceramic, wood and metal — so it is the product for balconies, stairs and foundations.",
+    apps:{fr:["Balcon","Escalier et marches","Fondation","Contour de piscine","Plancher de garage","Surface verticale","Seuil et palier","Galerie"],
+          en:["Balcony","Stairs and steps","Foundation","Pool surround","Garage floor","Vertical surface","Threshold and landing","Veranda"]},
+    subs:{fr:["Béton","Céramique","Bois","Métal"],
+          en:["Concrete","Ceramic","Wood","Metal"]},
+    colours:"poly"
+  }
+};
+var PAGE_ORDER = ["ecopavage","epdm","polygranite"];
 
 /* application tabs — cross-section + service taxonomy, from the GoRubber listing */
 var APPS = [
@@ -1622,58 +1682,6 @@ function baSet(p){
 /* ────────────────────────────────────────────────
    CROSS-SECTION
    ──────────────────────────────────────────────── */
-function buildXS(app){
-  var cv = document.getElementById("xsCanvas"), lab = document.getElementById("xsLabels");
-  if(!cv) return;
-  var d = fit(cv, 1100), w = d.w, h = d.h, ctx = cv.getContext("2d");
-  var inset = Math.round(22 / (cv.getBoundingClientRect().width || 1) * w);
-  ctx.clearRect(0, 0, w, h);
-  ctx.fillStyle = "#0E2233";
-  ctx.fillRect(0, 0, w, h);
-
-  var x0 = inset, x1 = Math.round(w * 0.52);
-  var y = inset, avail = h - inset * 2, i;
-  var lay = app.layers;
-
-  for(i = 0; i < lay.length; i++){
-    var bh = Math.round(avail * lay[i].p);
-    if(lay[i].liquid){
-      var gg = ctx.createLinearGradient(0, y, 0, y + bh);
-      gg.addColorStop(0, "#1A1B1D"); gg.addColorStop(.42, "#0C0D0E"); gg.addColorStop(1, "#141517");
-      ctx.fillStyle = gg; ctx.fillRect(x0, y, x1 - x0, bh);
-      ctx.fillStyle = "rgba(128,206,72,.12)";
-      ctx.fillRect(x0, y + Math.round(bh * .3), x1 - x0, Math.max(1, Math.round(bh * .1)));
-    } else {
-      /* the substrate is solid material, not loose granulate: a mid-grey matrix
-         between the aggregate keeps it reading as a slab rather than as speckle */
-      granules(ctx, x0, y, x1 - x0, bh, lay[i].mix, rad(lay[i].g, 0.34, x1 - x0), 300 + i * 91 + app.k.charCodeAt(0), lay[i].sub ? "#4E5358" : "#0B0C0D");
-    }
-    if(lay[i].sub){
-      var R = rnd(55 + i);
-      ctx.save(); ctx.beginPath(); ctx.rect(x0, y, x1 - x0, bh); ctx.clip();
-      crackLine(ctx, x0 + (x1-x0)*.4, y + 2, 1.5, bh * .8, 2.2, R, 1);
-      ctx.restore();
-    }
-    ctx.fillStyle = "rgba(237,235,230,.13)";
-    ctx.fillRect(x0, y, x1 - x0, 1);
-    y += bh;
-  }
-  ctx.fillStyle = "rgba(237,235,230,.13)";
-  ctx.fillRect(x0, y - 1, x1 - x0, 1);
-  /* leader ticks */
-  ctx.fillStyle = "rgba(237,235,230,.28)";
-  var yy = inset;
-  for(i = 0; i < lay.length; i++){
-    var bh2 = Math.round(avail * lay[i].p);
-    ctx.fillRect(x1, yy + bh2 / 2, Math.round(w * .045), 1);
-    yy += bh2;
-  }
-
-  lab.innerHTML = lay.map(function(Ly){
-    return '<div class="xs-row" style="flex:' + Ly.p + '"><i></i><span><b>' +
-      esc(Ly[LANG === "fr" ? "fr" : "en"]) + '</b><br><u>' + esc(Ly[LANG === "fr" ? "fr_v" : "en_v"]) + '</u></span></div>';
-  }).join("");
-}
 
 /* ────────────────────────────────────────────────
    HELPERS
@@ -1692,84 +1700,15 @@ function $(id){ return document.getElementById(id); }
 /* ────────────────────────────────────────────────
    CONFIGURATOR
    ──────────────────────────────────────────────── */
-var CFG = { surf:"drive", blend:"GREIGE", border:false };
 
-function blendOf(){ for(var i=0;i<BLENDS.length;i++) if(BLENDS[i].n===CFG.blend) return BLENDS[i]; return BLENDS[0]; }
-function cfgMix(){ return [[blendOf().c, 100]]; }
-function cfgCode(){
-  return CFG.blend + "  ·  " + L(blendOf()) + "  ·  " +
-    PRODUCTS[surfOf().prod][LANG === "fr" ? "fr" : "en"].toUpperCase();
-}
-function cfgSeed(){
-  var v = 17, n = CFG.blend;
-  for(var i=0;i<n.length;i++) v = (v*31 + n.charCodeAt(i)) >>> 0;
-  return (v*31 + CFG.surf.charCodeAt(0)) >>> 0;
-}
 /* tile the real swatch photograph across the preview, offsetting each tile so the
    repeat does not read as a pattern; fall back to the granule renderer if it is
    not decoded yet */
-function drawCfg(){
-  var cv = $("cfgCanvas"); if(!cv) return;
-  var d = fit(cv, 1200), ctx = cv.getContext("2d"), s = surfOf();
-  var img = SWIMG[CFG.blend];
-  var bh = CFG.border ? Math.max(14, Math.round(d.h * 0.13)) : 0;
-  if(img){
-    /* one swatch, scaled to cover. Tiling it either shows a grid or, once
-       mirrored, a kaleidoscope — and the panel is labelled as a factory
-       swatch, so a single continuous sample is the honest thing to show. */
-    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, d.w, d.h - bh); ctx.clip();
-    drawCover(ctx, img, d.w, d.h - bh);
-    ctx.restore();
-    if(bh){
-      ctx.save(); ctx.beginPath(); ctx.rect(0, d.h - bh, d.w, bh); ctx.clip();
-      ctx.filter = "brightness(0.45)";
-      ctx.translate(0, d.h - bh);
-      drawCover(ctx, img, d.w, bh);
-      ctx.filter = "none"; ctx.restore();
-      ctx.fillStyle = "#0B1B27"; ctx.fillRect(0, d.h - bh - 2, d.w, 3);
-    }
-  } else {
-    var r = rad(s.g, s.fov, d.w);
-    granules(ctx, 0, 0, d.w, d.h - bh, cfgMix(), r, cfgSeed(), "#0B0C0D");
-  }
-}
-function renderCfg(){
-  var s = surfOf(), P = PRODUCTS[s.prod];
-
-  $("cfgSurface").innerHTML = SURFACES.map(function(x){
-    return '<button class="chip" type="button" data-surf="' + x.k + '" aria-pressed="' + (x.k === CFG.surf) + '">' +
-      esc(L(x)) + '<i class="chip-p">' + esc(PRODUCTS[x.prod][LANG === "fr" ? "fr" : "en"]) + '</i></button>';
-  }).join("");
-
-  $("cfgBlends").innerHTML = BLENDS.map(function(B){
-    return '<button class="blend" type="button" data-blend="' + B.n + '" aria-pressed="' + (CFG.blend === B.n) + '">' +
-      '<i style="background-image:url(&quot;data:image/jpeg;base64,' + SW[B.n] + '&quot;)"></i><b>' + B.n + '</b></button>';
-  }).join("");
-
-  $("cfgBorder").setAttribute("aria-pressed", String(CFG.border));
-
-  var full = cfgCode(), ix = full.indexOf("·");
-  $("cfgCode").innerHTML = "<em>" + esc(full.slice(0, ix).trim()) + "</em>&nbsp;&nbsp;" + esc(full.slice(ix));
-  $("cfgScale").textContent = (LANG === "fr" ? "Échantillon d\u2019usine" : "Factory swatch");
-
-  $("cfgProd").innerHTML = '<b>' + esc(P[LANG === "fr" ? "fr" : "en"]) + '</b>' +
-    '<span>' + esc(L(P, "_t")) + '</span>';
-  $("cfgProdNote").textContent = L(P, "_sub");
-
-  $("cfgReadout").innerHTML = P.rows.map(function(r){
-    var v = r.v ? pick(r.v) : pick(L(r, "_v"));
-    return '<div class="ro' + (r.src ? '' : ' ph') + '"><span>' + esc(L(r)) + '</span><b>' + esc(v) + '</b></div>';
-  }).join("");
-
-  var qb = $("qBlend"); if(qb) qb.value = cfgCode().replace(/\s+/g, " ");
-  drawCfg();
-}
 
 /* ────────────────────────────────────────────────
    SECTION RENDERERS
    ──────────────────────────────────────────────── */
 APPS.sort(function(a,b){ return a.ord - b.ord; });
-var activeApp = 0;
 
 function renderStatic(){
   $("heroSpec").innerHTML = HEROSPEC.map(function(x){
@@ -1782,12 +1721,6 @@ function renderStatic(){
     return '<div><b>' + esc(L(x)) + '</b><span class="m m-lab">' + esc(L(x, "l")) + '</span></div>';
   }).join("");
 
-  $("appTabs").innerHTML = APPS.map(function(a, i){
-    return '<button class="tab" type="button" role="tab" id="tab-' + a.k + '" data-i="' + i + '"' +
-      ' aria-controls="appPanel" tabindex="' + (i === activeApp ? "0" : "-1") + '"' +
-      ' aria-selected="' + (i === activeApp) + '"><span class="m m-lab">' + a.lab + '</span>' +
-      '<span class="tab-n">' + esc(L(a)) + '</span></button>';
-  }).join("");
 
   var ch = "<thead><tr><th></th>" + COMPARE.cols.map(function(c){
     return '<th' + (c.us ? ' class="us"' : '') + '>' + esc(L(c)) + "</th>";
@@ -1841,20 +1774,71 @@ function renderStatic(){
     '<li><a href="tel:+15146168971">514 616-8971</a></li>' +
     "</ul></div>";
 
+  $("prodCards").innerHTML = PAGE_ORDER.map(function(k){
+    var pg = PAGES[k], P = PRODUCTS[pg.prod];
+    return '<a class="pgcard" href="#' + k + '" data-goto="' + k + '">' +
+      '<span class="m">' + esc(L(P, "_t")) + "</span>" +
+      "<h3>" + esc(L(pg, "_h")) + "</h3>" +
+      "<p>" + esc(L(P, "_sub")) + "</p>" +
+      '<span class="m m-acc">' + (LANG === "fr" ? "Voir la page →" : "See the page →") + "</span></a>";
+  }).join("");
+
   renderGallery();
-  renderAppBody();
-  setTabs();
 }
 
 /* ── views ────────────────────────────────── */
+var VIEWS = ["home","gallery","ecopavage","epdm","polygranite"];
 function showView(v, syncHash){
+  if(VIEWS.indexOf(v) < 0) v = "home";
+  if(PAGES[v]) renderProductPage(v);
   document.body.setAttribute("data-view", v);
-  var link = document.querySelector('.nav-links a[href="#gallery"]');
-  if(link){ if(v === "gallery") link.setAttribute("aria-current","page"); else link.removeAttribute("aria-current"); }
+  [].forEach.call(document.querySelectorAll(".nav-links a[data-goto]"), function(a){
+    if(a.getAttribute("data-goto") === v) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");
+  });
   if(syncHash !== false){
-    try{ history.replaceState(null, "", v === "gallery" ? "#gallery" : location.pathname + location.search); }catch(e){}
+    try{ history.replaceState(null, "", v === "home" ? location.pathname + location.search : "#" + v); }catch(e){}
   }
   window.scrollTo(0, 0);
+}
+
+/* ── service pages ────────────────────────── */
+function renderProductPage(key){
+  var pg = PAGES[key]; if(!pg) return;
+  var P = PRODUCTS[pg.prod];
+  $("pgEyebrow").textContent = (PAGE_ORDER.indexOf(key) + 1 < 10 ? "0" : "") + (PAGE_ORDER.indexOf(key) + 1) +
+    (LANG === "fr" ? " / Produit" : " / Product");
+  $("pgTitle").textContent = L(pg, "_h");
+  $("pgLede").innerHTML = "<p>" + esc(L(pg, "_lede")) + "</p>";
+  $("pgApps").innerHTML = pg.apps[LANG === "fr" ? "fr" : "en"].map(function(x){ return "<li>" + esc(x) + "</li>"; }).join("");
+  $("pgSubs").innerHTML = pg.subs[LANG === "fr" ? "fr" : "en"].map(function(x){ return "<li>" + esc(x) + "</li>"; }).join("");
+  $("pgSpecs").innerHTML = P.rows.map(function(r){
+    var v = r.v ? pick(r.v) : pick(L(r, "_v"));
+    return '<div class="ro' + (r.src ? "" : " ph") + '"><span>' + esc(L(r)) + "</span><b>" + esc(v) + "</b></div>";
+  }).join("");
+  $("pgNote").textContent = L(P, "_sub");
+
+  var html = "";
+  if(pg.colours === "blends"){
+    html = '<h3 class="pg-h">' + (LANG === "fr" ? "Les mélanges" : "The blends") + "</h3>" +
+      '<div class="swgrid">' + BLENDS.map(function(B){
+        return '<div class="swcell"><i style="background-image:url(&quot;data:image/jpeg;base64,' + SW[B.n] + '&quot;); background-size:cover; background-position:center"></i><b>' + B.n + "</b></div>";
+      }).join("") + "</div>" +
+      '<p class="pg-note">' + (LANG === "fr"
+        ? "Six mélanges d’usine, dosés à des proportions publiées. Un échantillon physique est coulé avant toute commande."
+        : "Six factory blends at published ratios. A physical sample is poured before anything is ordered.") + "</p>";
+  } else if(pg.colours === "poly"){
+    function cells(list){
+      return '<div class="swgrid">' + list.map(function(c){
+        return '<div class="swcell"><i style="background:' + c.hex + '"></i><b>' + esc(c.n) + "</b></div>";
+      }).join("") + "</div>";
+    }
+    html = '<h3 class="pg-h">' + (LANG === "fr" ? "Couleurs standard" : "Standard colours") + "</h3>" + cells(POLY_STD) +
+      '<h3 class="pg-h">' + (LANG === "fr" ? "Sur commande" : "Special order") + "</h3>" + cells(POLY_SPECIAL) +
+      '<p class="pg-note">' + (LANG === "fr"
+        ? "Teintes échantillonnées sur la charte du fournisseur — la charte physique reste la référence pour un choix final."
+        : "Tones sampled from the supplier's chart — the physical chart remains the reference for a final choice.") + "</p>";
+  }
+  $("pgColours").innerHTML = html;
 }
 
 /* ── gallery ──────────────────────────────── */
@@ -1918,20 +1902,6 @@ document.addEventListener("keydown", function(e){
 });
 $("lightbox").addEventListener("click", function(e){ if(e.target === this) lbShut(); });
 
-function renderAppBody(){
-  var a = APPS[activeApp];
-  var body = $("appBody");
-  var list = a.svc[LANG === "fr" ? "fr" : "en"];
-  body.innerHTML =
-    '<p class="m m-acc">' + a.lab + " / " + esc(L(a, "_t")) + "</p>" +
-    '<h3 style="margin-top:10px">' + esc(L(a)) + "</h3>" +
-    '<div class="prose">' + esc(L(a, "_p")) + "</div>" +
-    '<p class="m m-lab" style="margin:0 0 10px">' + (LANG === "fr" ? "Applications — " : "Applications — ") + list.length + "</p>" +
-    '<ul class="svc">' + list.map(function(s){ return "<li>" + esc(s) + "</li>"; }).join("") + "</ul>" +
-    '<a class="cta ghost sm" href="#quote" style="margin-top:20px">' +
-    (LANG === "fr" ? "Estimer ce type de surface" : "Estimate this surface type") + "</a>";
-  buildXS(a);
-}
 
 function drawQuoteBG(){
   var cv = $("quoteCanvas"); if(!cv) return;
@@ -1954,28 +1924,30 @@ function applyLang(){
   var lb = document.querySelectorAll(".lang button");
   for(i = 0; i < lb.length; i++) lb[i].setAttribute("aria-pressed", String(lb[i].getAttribute("data-lang") === LANG));
   renderStatic();
-  renderCfg();
+
+  /* a product page is rendered on navigation, so it has to be re-rendered
+     when the language changes underneath it */
+  var cur = document.body.getAttribute("data-view");
+  if(PAGES[cur]) renderProductPage(cur);
 }
 
 /* ────────────────────────────────────────────────
    WIRING
    ──────────────────────────────────────────────── */
-function setTabs(){
-  var tabs = document.querySelectorAll("#appTabs .tab");
-  for(var i = 0; i < tabs.length; i++){
-    tabs[i].setAttribute("aria-selected", String(i === activeApp));
-    tabs[i].setAttribute("tabindex", i === activeApp ? "0" : "-1");
-  }
-  var p = $("appPanel");
-  if(p) p.setAttribute("aria-labelledby", "tab-" + APPS[activeApp].k);
-}
 
 /* the gallery link swaps view instead of scrolling to a section */
 document.addEventListener("click", function(e){
-  var a = e.target.closest ? e.target.closest('a[href="#gallery"], a[href="#top"], a.brand') : null;
+  var a = e.target.closest ? e.target.closest("[data-goto], a.brand") : null;
   if(!a) return;
+  var to = a.classList && a.classList.contains("brand") ? "home" : a.getAttribute("data-goto");
+  if(to === "quote"){
+    e.preventDefault();
+    showView("home");
+    var q = $("quote"); if(q) q.scrollIntoView();
+    return;
+  }
   e.preventDefault();
-  showView(a.getAttribute("href") === "#gallery" ? "gallery" : "home");
+  showView(to);
 });
 
 document.addEventListener("click", function(e){
@@ -1984,23 +1956,14 @@ document.addEventListener("click", function(e){
 
   if(t.hasAttribute("data-lang")){ LANG = t.getAttribute("data-lang"); applyLang(); return; }
 
-  if(t.hasAttribute("data-i")){
-    activeApp = parseInt(t.getAttribute("data-i"), 10);
-    setTabs();
-    renderAppBody();
-    return;
-  }
 
-  if(t.hasAttribute("data-surf")){ CFG.surf = t.getAttribute("data-surf"); renderCfg(); return; }
-  if(t.hasAttribute("data-blend")){ CFG.blend = t.getAttribute("data-blend"); renderCfg(); return; }
   if(t.hasAttribute("data-gal")){ lbOpen(parseInt(t.getAttribute("data-gal"), 10)); return; }
   if(t.hasAttribute("data-cat")){ galCat = t.getAttribute("data-cat"); renderGallery(); return; }
-  if(t.id === "backHome"){ showView("home"); return; }
+
   if(t.id === "lbClose"){ lbShut(); return; }
   if(t.id === "lbPrev"){ lbOpen(lbAt - 1); return; }
   if(t.id === "lbNext"){ lbOpen(lbAt + 1); return; }
 
-  if(t.id === "cfgBorder"){ CFG.border = !CFG.border; renderCfg(); return; }
 
   if(t.id === "phToggle"){
     var on = document.body.classList.toggle("showph");
@@ -2013,14 +1976,6 @@ document.addEventListener("click", function(e){
 });
 
 /* keyboard tab roving */
-$("appTabs").addEventListener("keydown", function(e){
-  if(e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
-  e.preventDefault();
-  activeApp = (activeApp + (e.key === "ArrowRight" ? 1 : APPS.length - 1)) % APPS.length;
-  setTabs();
-  document.querySelectorAll("#appTabs .tab")[activeApp].focus();
-  renderAppBody();
-});
 
 
 
@@ -2053,14 +2008,12 @@ function drawAll(animateHero){
   buildHero(animateHero);
   buildBA();
   baSet(parseFloat(baR.value));
-  buildXS(APPS[activeApp]);
-  drawCfg();
   drawQuoteBG();
 }
 
-showView(location.hash === "#gallery" ? "gallery" : "home", false);
+showView((location.hash || "").replace("#",""), false);
 window.addEventListener("hashchange", function(){
-  showView(location.hash === "#gallery" ? "gallery" : "home", false);
+  showView((location.hash || "").replace("#",""), false);
 });
 
 applyLang();
@@ -2107,7 +2060,7 @@ if(!splashOn){
 }
 /* text-driven boxes settle only once the webfonts land */
 if(document.fonts && document.fonts.ready){
-  document.fonts.ready.then(function(){ buildXS(APPS[activeApp]); drawQuoteBG(); drawCfg(); });
+  document.fonts.ready.then(function(){ drawQuoteBG(); });
 }
 
 var rt;
