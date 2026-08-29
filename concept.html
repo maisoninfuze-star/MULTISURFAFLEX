@@ -566,9 +566,11 @@ body:not([data-view="ecopavage"]) #why{display:none}
 
 /* ══ product films ══ */
 .vidgrid{display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:12px; margin-top:12px}
-.vidcard{display:block; text-decoration:none; color:inherit; border:1px solid var(--line); background:var(--surface)}
+.vidcard{display:flex; flex-direction:column; text-decoration:none; color:inherit; border:1px solid var(--line); background:var(--surface)}
 .vidcard:hover{border-color:var(--line-2)}
-.vidcard .thumb{position:relative; aspect-ratio:16/9; overflow:hidden; background:#0B1B27}
+/* the thumb is a <span>: without display:block it stays inline, its height
+   never reaches the card, and long titles spill out of the bottom */
+.vidcard .thumb{display:block; position:relative; aspect-ratio:16/9; overflow:hidden; background:#0B1B27}
 .vidcard .thumb img{width:100%; height:100%; object-fit:cover; display:block}
 .vidcard .play{
   position:absolute; inset:0; display:grid; place-items:center;
@@ -580,7 +582,7 @@ body:not([data-view="ecopavage"]) #why{display:none}
   box-shadow:0 2px 14px rgba(4,10,16,.4);
 }
 .vidcard:hover .play span{background:#fff}
-.vidcard b{display:block; font-size:12.5px; font-weight:600; line-height:1.35; padding:10px 12px 12px}
+.vidcard b{display:block; flex:1 1 auto; font-size:12.5px; font-weight:600; line-height:1.35; padding:10px 12px 12px}
 @media (pointer:coarse){ .vidcard{min-height:44px} }
 
 /* ══ gallery ══ */
@@ -872,21 +874,6 @@ body:not([data-view="ecopavage"]) #why{display:none}
   </div>
 </section>
 
-<section class="sec dark" id="why">
-  <div class="wrap">
-    <div class="head rv">
-      <p class="m m-lab" data-en="03 / Performance" data-fr="03 / Performance">03 / Performance</p>
-      <div class="head-b">
-        <h2 data-en="Against what it replaces." data-fr="Face à ce qu’il remplace.">Face à ce qu’il remplace.</h2>
-        <div class="prose" data-en-html="&lt;p&gt;The table below is the manufacturer's own published comparison, reproduced without editing — including the one line where Écopavage loses. Everything under it is a property of the material, not a marketing position.&lt;/p&gt;" data-fr-html="&lt;p&gt;Le tableau ci-dessous est la comparaison publiée par le fabricant, reproduite sans retouche — y compris la ligne où l’écopavage perd. Tout ce qui suit est une propriété du matériau, pas une position marketing.&lt;/p&gt;"><p>Le tableau ci-dessous est la comparaison publiée par le fabricant, reproduite sans retouche — y compris la ligne où l’écopavage perd. Tout ce qui suit est une propriété du matériau, pas une position marketing.</p></div>
-      </div>
-    </div>
-    <div class="rv cmp-wrap"><table class="cmp" id="cmpTable"></table></div>
-    <p class="cmp-note m rv" id="cmpNote"></p>
-    <div class="spectable rv" id="whyTable" style="margin-top:clamp(34px,5vw,54px)"></div>
-  </div>
-</section>
-
 <section class="sec" id="product">
   <div class="wrap">
     <div class="head">
@@ -912,6 +899,21 @@ body:not([data-view="ecopavage"]) #why{display:none}
         <a class="cta" href="#quote" data-goto="quote" style="justify-content:center" data-en="Free quote" data-fr="Soumission gratuite">Soumission gratuite</a>
       </aside>
     </div>
+  </div>
+</section>
+
+<section class="sec dark" id="why">
+  <div class="wrap">
+    <div class="head rv">
+      <p class="m m-lab" data-en="03 / Performance" data-fr="03 / Performance">03 / Performance</p>
+      <div class="head-b">
+        <h2 data-en="Against what it replaces." data-fr="Face à ce qu’il remplace.">Face à ce qu’il remplace.</h2>
+        <div class="prose" data-en-html="&lt;p&gt;The table below is the manufacturer's own published comparison, reproduced without editing — including the one line where Écopavage loses. Everything under it is a property of the material, not a marketing position.&lt;/p&gt;" data-fr-html="&lt;p&gt;Le tableau ci-dessous est la comparaison publiée par le fabricant, reproduite sans retouche — y compris la ligne où l’écopavage perd. Tout ce qui suit est une propriété du matériau, pas une position marketing.&lt;/p&gt;"><p>Le tableau ci-dessous est la comparaison publiée par le fabricant, reproduite sans retouche — y compris la ligne où l’écopavage perd. Tout ce qui suit est une propriété du matériau, pas une position marketing.</p></div>
+      </div>
+    </div>
+    <div class="rv cmp-wrap"><table class="cmp" id="cmpTable"></table></div>
+    <p class="cmp-note m rv" id="cmpNote"></p>
+    <div class="spectable rv" id="whyTable" style="margin-top:clamp(34px,5vw,54px)"></div>
   </div>
 </section>
 
