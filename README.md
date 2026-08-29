@@ -109,22 +109,41 @@ stay dark in both themes, so the product always sits on a consistent ground.
 
 ### Colour system
 
-The six named blends the company actually sells. The mixes below are transcribed from the
-label printed on each factory swatch, in `assets/swatches/`; the hexes are sampled from the
-granulate in the same photographs.
+Three ranges, one per product. Every swatch on the site is the supplier's own
+photographed chart rather than a flat colour chip, and every hex below was sampled from
+the granulate in those photographs.
+
+**Écopavage — 8 named blends + 12 CSBR granulates.** The blends are dosed at published
+ratios from the numbered CSBR granulates, which are also sold on their own.
 
 | Blend | Published mix | Sampled |
 |---|---|---|
-| CARAMEL | 80 % CSBR tan · 20 % EPDM beige | `#8C7560` |
-| TOPAZ | 80 % CSBR tan · 20 % EPDM eggshell | `#847263` |
-| GRIGIO | 70 % CSBR grey · 30 % CSBR black | `#69717C` |
 | GREIGE | 50 % CSBR grey · 50 % CSBR tan | `#6A635F` |
-| MOCHA | 50 % CSBR brown · 50 % CSBR tan | `#71594B` |
-| ONYX | 100 % CSBR black | `#464850` |
+| GRIGIO | 70 % CSBR grey · 30 % CSBR black | `#68707B` |
+| CARAMEL | 80 % CSBR tan · 20 % EPDM beige | `#8B7460` |
+| MOKA | 50 % CSBR brown · 50 % CSBR tan | `#70594C` |
+| SIERRA | 75 % CSBR tan · 25 % CSBR red | `#624539` |
+| DAKOTA | 50 % CSBR grey · 50 % CSBR brown | `#4E4F50` |
+| ONYX | 100 % CSBR black | `#474851` |
+| TOPAZ | 80 % CSBR tan · 20 % EPDM eggshell | `#847263` |
 
-The wider catalogue also runs twelve numbered CSBR codes (CSBR-60 through CSBR-75), including
-reds, greens and blues. The site shows only the six named blends, which cover the work in the
-company's own project archive.
+CSBR-60 through CSBR-75: twelve through-coloured granulates including greens, blues and
+two reds. Swatches in `assets/swatches-csbr/`.
+
+**EPDM — 36 tones, named after grape varietals** (Sauvignon, Pinot, Chenin and Ruby each
+run Blanc / Gris / Grigio; then Barolo, Barbera, Nebbiolo, Merlot, Malbec, Shiraz and the
+rest). Swatches in `assets/swatches-epdm/`.
+
+**Polygranite — 10 standard + 10 special order.** Flat colour chips, not photographs;
+the supplier publishes no swatch photography for this line.
+
+Two corrections came out of the supplier's live chart:
+
+- It spells the blend **MOKA**, not MOCHA. The site said MOCHA, from the label on the
+  company's own swatch photo.
+- **SIERRA** and **DAKOTA** are current catalogue blends that were missing entirely.
+- **TOPAZ** is kept because the company's own swatch folder has it, but it is *not* on
+  the supplier's current page — worth confirming it is still sold.
 
 ### Service area
 
