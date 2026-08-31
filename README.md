@@ -164,6 +164,18 @@ stranding someone who has just typed out their whole job.
 external hosts, so the fetch is refused there and the visitor sees the failure message with
 the phone number. On the real host it works normally.
 
+### Chat widget
+
+The LeadConnector chat widget loads from `widgets.leadconnectorhq.com`. Like the quote form it
+**cannot run inside the published Artifact** — that CSP blocks third-party scripts — but works
+normally on a real host.
+
+It pins its bubble to `bottom: 20px`, which on a phone lands directly on top of the fixed
+call/quote action bar. Its markup lives in a shadow root, so outside CSS cannot reach it: a
+small script waits for the element to hydrate and injects an offset stylesheet into the shadow
+root itself, lifting the bubble to `75px + safe-area` below 768px only. The widget also sets an
+inline `bottom: 20px`, so that rule has to carry `!important` to win.
+
 ### Service area
 
 Cities listed on the site are taken from geotags on the company's own Instagram posts:

@@ -2320,3 +2320,43 @@ window.addEventListener("resize", function(){
 
 })();
 </script>
+
+<!-- LeadConnector chat widget. Loads only on a real host: the published
+     Artifact's CSP blocks third-party scripts, so the bubble will not appear
+     in that preview. -->
+<script src="https://widgets.leadconnectorhq.com/loader.js"
+  data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
+  data-widget-id="6a95f925e48bae53988716f9"></script>
+
+<script>
+/* The widget pins its bubble to bottom:20px, which on a phone lands straight
+   on top of the fixed call/quote bar. Its markup lives in a shadow root, so
+   outside CSS cannot reach it — the offset has to be injected into the root
+   itself once the element hydrates. */
+(function(){
+  var BAR = 61;           /* measured height of .actionbar */
+  var GAP = 14;
+  var css =
+    "@media (max-width:768px){" +
+      ".lc_text-widget,.lc_text-widget--bubble{" +
+        "bottom:calc(" + (BAR + GAP) + "px + env(safe-area-inset-bottom)) !important;" +
+      "}" +
+    "}";
+  var tries = 0;
+  function lift(){
+    var el = document.querySelector("chat-widget");
+    var root = el && el.shadowRoot;
+    if(!root){
+      if(++tries > 40) return;         /* ~20s, then give up quietly */
+      return setTimeout(lift, 500);
+    }
+    if(root.querySelector("style[data-msf-offset]")) return;
+    var st = document.createElement("style");
+    st.setAttribute("data-msf-offset", "");
+    st.textContent = css;
+    root.appendChild(st);
+  }
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", lift);
+  else lift();
+})();
+</script>
