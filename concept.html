@@ -683,6 +683,17 @@ body:not([data-view="ecopavage"]) #why{display:none}
   background:rgba(128,206,72,.13); color:#9BDC6B; border:1px solid rgba(128,206,72,.35);
   padding:5px 10px; border-radius:2px; font-size:9.5px; letter-spacing:.09em;
 }
+.hp{position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden}
+.inp.bad input,.inp.bad textarea,.inp.bad select{border-color:#B3261E; box-shadow:0 0 0 3px rgba(179,38,30,.12)}
+.inp .err{
+  font-family:var(--f-m); font-size:9.5px; letter-spacing:.06em; text-transform:uppercase;
+  color:#B3261E; margin:0;
+}
+.q-note[data-state="sending"]{color:var(--ink-2)}
+.q-note[data-state="ok"]{color:var(--lime-ink); font-weight:600}
+.q-note[data-state="err"]{color:#B3261E}
+.q-note a{color:inherit}
+.cta[aria-busy="true"]{opacity:.75; pointer-events:none}
 .q-note{font-family:var(--f-m); font-size:9.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); line-height:1.7}
 .q-list{display:grid; gap:11px; margin:0; padding:0; list-style:none}
 .q-list li{display:grid; grid-template-columns:auto 1fr; gap:10px; font-family:var(--f-b); font-size:15px; line-height:1.45; color:#C2C6C1}
@@ -964,9 +975,10 @@ body:not([data-view="ecopavage"]) #why{display:none}
         <p class="m" id="quotePhone"></p>
       </div>
       <form class="q-form" id="quoteForm" novalidate>
+        <div class="hp" aria-hidden="true"><label>Ne pas remplir<input type="text" name="website" tabindex="-1" autocomplete="off"></label></div>
         <div class="grid2">
-          <label class="inp"><span class="m m-lab" data-en="Name" data-fr="Nom">Nom</span><input type="text" name="name" autocomplete="name"></label>
-          <label class="inp"><span class="m m-lab" data-en="Phone" data-fr="Téléphone">Téléphone</span><input type="tel" name="phone" autocomplete="tel"></label>
+          <label class="inp"><span class="m m-lab" data-en="Name *" data-fr="Nom *">Nom *</span><input type="text" name="name" autocomplete="name" required></label>
+          <label class="inp"><span class="m m-lab" data-en="Phone *" data-fr="Téléphone *">Téléphone *</span><input type="tel" name="phone" autocomplete="tel" required></label>
         </div>
         <div class="grid2">
           <label class="inp"><span class="m m-lab" data-en="Email" data-fr="Courriel">Courriel</span><input type="email" name="email" autocomplete="email"></label>
@@ -979,7 +991,7 @@ body:not([data-view="ecopavage"]) #why{display:none}
         <label class="inp"><span class="m m-lab" data-en="Colour, if you have one in mind" data-fr="Couleur, si vous en avez une en tête">Couleur, si vous en avez une en tête</span><input type="text" name="blend" id="qBlend" data-en-ph="GREIGE, CHARCOAL, Sahara…" data-fr-ph="GREIGE, CHARCOAL, Sahara…"></label>
         <label class="inp"><span class="m m-lab" data-en="Current surface and condition" data-fr="Surface actuelle et état">Surface actuelle et état</span><textarea name="notes" data-en-ph="Poured concrete, about 12 years old, hairline cracking along the middle…" data-fr-ph="Béton coulé, environ 12 ans, fissures fines au centre…"></textarea></label>
         <button class="cta" type="submit" style="justify-content:center" data-en="Send request" data-fr="Envoyer la demande">Envoyer la demande</button>
-        <p class="q-note" id="qNote" data-en="Concept demo — this form does not submit anywhere yet." data-fr="Démo de concept — ce formulaire n’envoie encore rien.">Démo de concept — ce formulaire n’envoie encore rien.</p>
+        <p class="q-note" id="qNote" data-en="We reply the same day, Monday to Saturday." data-fr="Nous répondons le jour même, du lundi au samedi.">Nous répondons le jour même, du lundi au samedi.</p>
       </form>
     </div>
   </div>
@@ -2124,13 +2136,105 @@ document.addEventListener("click", function(e){
 var baR = $("baRange");
 baR.addEventListener("input", function(){ baSet(parseFloat(this.value)); });
 
+/* ── quote form ───────────────────────────── */
+var HOOK = "https://services.leadconnectorhq.com/hooks/A1Y2JfCdzrvuEDvZsXfy/webhook-trigger/544c2dd4-f71d-44a4-9b51-03b7c7a646c4";
+
+function fieldErr(input, msg){
+  var wrap = input.closest(".inp");
+  wrap.classList.toggle("bad", !!msg);
+  input.setAttribute("aria-invalid", msg ? "true" : "false");
+  var e = wrap.querySelector(".err");
+  if(msg){
+    if(!e){ e = document.createElement("p"); e.className = "err"; wrap.appendChild(e); }
+    e.textContent = msg;
+  } else if(e) e.remove();
+}
+function validateQuote(f){
+  var bad = [];
+  var name = f.elements.name, phone = f.elements.phone, email = f.elements.email;
+  var reqMsg = LANG === "fr" ? "Champ requis" : "Required";
+  fieldErr(name, name.value.trim() ? "" : reqMsg);
+  if(!name.value.trim()) bad.push(name);
+  /* a phone number is what actually gets someone called back */
+  var digits = phone.value.replace(/\D/g, "");
+  var phoneMsg = !phone.value.trim() ? reqMsg
+    : (digits.length < 10 ? (LANG === "fr" ? "Numéro incomplet" : "Number looks short") : "");
+  fieldErr(phone, phoneMsg);
+  if(phoneMsg) bad.push(phone);
+  var emailMsg = email.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email.value.trim())
+    ? (LANG === "fr" ? "Courriel invalide" : "Check this address") : "";
+  fieldErr(email, emailMsg);
+  if(emailMsg) bad.push(email);
+  return bad;
+}
+
 $("quoteForm").addEventListener("submit", function(e){
   e.preventDefault();
-  var n = $("qNote");
-  n.textContent = LANG === "fr"
-    ? "Concept — la demande n’a pas été envoyée. Branchez ce formulaire à votre boîte de réception avant la mise en ligne."
-    : "Concept — nothing was sent. Wire this form to your inbox before this goes live.";
-  n.style.color = "var(--terra)";
+  var form = this, note = $("qNote"), btn = form.querySelector('button[type="submit"]');
+
+  /* bots fill every field, including the one nobody can see */
+  if(form.elements.website.value){ return; }
+
+  var bad = validateQuote(form);
+  if(bad.length){
+    note.setAttribute("data-state", "err");
+    note.textContent = LANG === "fr"
+      ? "Vérifiez les champs en rouge."
+      : "Check the fields marked in red.";
+    bad[0].focus();
+    return;
+  }
+
+  var payload = {
+    name: form.elements.name.value.trim(),
+    phone: form.elements.phone.value.trim(),
+    email: form.elements.email.value.trim(),
+    city: form.elements.city.value.trim(),
+    application: (function(sel){
+      var opt = sel.options[sel.selectedIndex];
+      return opt ? opt.textContent.split(" — ")[0] : sel.value;
+    })(form.elements.application),
+    application_key: form.elements.application.value,
+    area_sqft: form.elements.area.value,
+    colour: form.elements.blend.value.trim(),
+    notes: form.elements.notes.value.trim(),
+    language: LANG,
+    source: "multisurfaflex.com",
+    page: document.body.getAttribute("data-view") || "home",
+    submitted_at: new Date().toISOString()
+  };
+
+  btn.setAttribute("aria-busy", "true");
+  note.setAttribute("data-state", "sending");
+  note.textContent = LANG === "fr" ? "Envoi en cours…" : "Sending…";
+
+  fetch(HOOK, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify(payload)
+  }).then(function(r){
+    if(!r.ok) throw new Error("HTTP " + r.status);
+    form.reset();
+    var qb = $("qBlend"); if(qb) qb.value = "";
+    note.setAttribute("data-state", "ok");
+    note.textContent = LANG === "fr"
+      ? "Merci — votre demande est partie. On vous rappelle sous peu."
+      : "Thank you — your request is on its way. We will call you back shortly.";
+  }).catch(function(){
+    /* never strand someone who has typed all that out: give them the phone */
+    note.setAttribute("data-state", "err");
+    note.innerHTML = LANG === "fr"
+      ? "L’envoi a échoué. Appelez-nous au <a href=\"tel:+14385302020\">438 530-2020</a> ou réessayez."
+      : "That did not send. Call us at <a href=\"tel:+14385302020\">438 530-2020</a> or try again.";
+  }).then(function(){
+    btn.removeAttribute("aria-busy");
+  });
+});
+
+/* clear a field's error as soon as it is corrected */
+["name","phone","email"].forEach(function(k){
+  var el = $("quoteForm").elements[k];
+  el.addEventListener("blur", function(){ if(el.value.trim()) validateQuote($("quoteForm")); });
 });
 
 /* reveal on scroll */

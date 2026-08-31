@@ -29,7 +29,7 @@ toggle that highlights every placeholder region at once.
 | EPDM thickness and warranty | Marked "à confirmer" in the configurator |
 | Email address | None found in any public listing |
 | Years in business | Domain registered 2018; not confirmed |
-| Form endpoint | The quote form does not submit anywhere yet |
+| Live webhook test | The form posts to the LeadConnector hook but has not been fired against the real endpoint — one test submission will create a real record in the CRM |
 
 There are **no invented customer reviews or ratings** anywhere on the page. The company has no
 public reviews at time of writing, so none are shown.
@@ -144,6 +144,25 @@ Two corrections came out of the supplier's live chart:
 - **SIERRA** and **DAKOTA** are current catalogue blends that were missing entirely.
 - **TOPAZ** is kept because the company's own swatch folder has it, but it is *not* on
   the supplier's current page — worth confirming it is still sold.
+
+### Quote form
+
+Posts JSON to a LeadConnector (GoHighLevel) inbound webhook. The endpoint returns
+`access-control-allow-origin: *`, so a normal cross-origin `fetch` works and the response
+can be read — no `no-cors` guesswork.
+
+Payload: `name, phone, email, city, application, application_key, area_sqft, colour, notes,
+language, source, page, submitted_at`. `application` carries the human-readable label so a
+lead lands in the inbox reading "Entrées et stationnements" rather than `res`.
+
+Name and phone are required; the phone is checked for ten digits, since that is what actually
+gets someone called back. A hidden honeypot field silently drops bots. If the post fails —
+HTTP error or no network — the status line offers the phone number as a link rather than
+stranding someone who has just typed out their whole job.
+
+**It will not work inside the published Artifact.** The Artifact CSP blocks requests to
+external hosts, so the fetch is refused there and the visitor sees the failure message with
+the phone number. On the real host it works normally.
 
 ### Service area
 
