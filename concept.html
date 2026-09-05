@@ -1877,6 +1877,7 @@ function renderStatic(){
   $("quotePhone").innerHTML =
     '<a href="tel:+14385302020">438 530-2020</a><br>' +
     '<a href="tel:+15146168971">514 616-8971</a><br>' +
+    '<a href="mailto:' + MAIL + '">' + MAIL + '</a><br>' +
     (LANG === "fr" ? "Lun – Sam, 9 h à 20 h" : "Mon – Sat, 9am to 8pm") +
     '<br>Montréal-Est, QC · FR / EN';
 
@@ -1899,6 +1900,7 @@ function renderStatic(){
     '<li><a href="#quote">' + (LANG === "fr" ? "Soumission gratuite" : "Free quote") + "</a></li>" +
     '<li><a href="tel:+14385302020">438 530-2020</a></li>' +
     '<li><a href="tel:+15146168971">514 616-8971</a></li>' +
+    '<li><a href="mailto:' + MAIL + '">' + MAIL + '</a></li>' +
     "</ul></div>";
 
   $("prodCards").innerHTML = PAGE_ORDER.map(function(k){
@@ -2142,6 +2144,10 @@ baR.addEventListener("input", function(){ baSet(parseFloat(this.value)); });
 
 /* ── quote form ───────────────────────────── */
 var HOOK = "https://services.leadconnectorhq.com/hooks/A1Y2JfCdzrvuEDvZsXfy/webhook-trigger/4f46e334-c95a-4dcb-b843-685255b961a6";
+/* where a lead should end up. The webhook decides who actually gets notified
+   — that is a GoHighLevel workflow setting — so this travels in the payload
+   for GHL to route on, and backs the mailto fallback below. */
+var MAIL = "Info@multisurfaflex.com";
 
 function fieldErr(input, msg){
   var wrap = input.closest(".inp");
@@ -2203,6 +2209,7 @@ $("quoteForm").addEventListener("submit", function(e){
     colour: form.elements.blend.value.trim(),
     notes: form.elements.notes.value.trim(),
     language: LANG,
+    notify_email: MAIL,
     source: "multisurfaflex.com",
     page: document.body.getAttribute("data-view") || "home",
     submitted_at: new Date().toISOString()
@@ -2225,11 +2232,27 @@ $("quoteForm").addEventListener("submit", function(e){
       ? "Merci — votre demande est partie. On vous rappelle sous peu."
       : "Thank you — your request is on its way. We will call you back shortly.";
   }).catch(function(){
-    /* never strand someone who has typed all that out: give them the phone */
+    /* never strand someone who has typed all that out: hand them the phone AND a
+       mailto with everything they entered already in the body, so a failed POST
+       costs them a click rather than the whole form. */
+    var lines = [
+      (LANG === "fr" ? "Nom" : "Name") + ": " + payload.name,
+      (LANG === "fr" ? "T\u00e9l\u00e9phone" : "Phone") + ": " + payload.phone,
+      (LANG === "fr" ? "Courriel" : "Email") + ": " + payload.email,
+      (LANG === "fr" ? "Ville" : "City") + ": " + payload.city,
+      (LANG === "fr" ? "Service" : "Application") + ": " + payload.application,
+      (LANG === "fr" ? "Superficie (pi\u00b2)" : "Area (sq ft)") + ": " + payload.area_sqft,
+      (LANG === "fr" ? "Couleur" : "Colour") + ": " + payload.colour,
+      "",
+      payload.notes
+    ].join("\n");
+    var mail = "mailto:" + MAIL +
+      "?subject=" + encodeURIComponent(LANG === "fr" ? "Demande de soumission \u2014 " + payload.name : "Quote request \u2014 " + payload.name) +
+      "&body=" + encodeURIComponent(lines);
     note.setAttribute("data-state", "err");
     note.innerHTML = LANG === "fr"
-      ? "L’envoi a échoué. Appelez-nous au <a href=\"tel:+14385302020\">438 530-2020</a> ou réessayez."
-      : "That did not send. Call us at <a href=\"tel:+14385302020\">438 530-2020</a> or try again.";
+      ? "L\u2019envoi a \u00e9chou\u00e9. <a href=\"" + mail + "\">Envoyez-nous le tout par courriel</a>, appelez au <a href=\"tel:+14385302020\">438 530-2020</a>, ou r\u00e9essayez."
+      : "That did not send. <a href=\"" + mail + "\">Email it to us instead</a>, call <a href=\"tel:+14385302020\">438 530-2020</a>, or try again.";
   }).then(function(){
     btn.removeAttribute("aria-busy");
   });
