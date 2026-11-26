@@ -108,19 +108,13 @@ input:focus{outline:2px solid var(--terra); outline-offset:1px; border-color:var
 <section id="gate" class="gate">
   <p class="m" style="color:var(--terra)">Multisurfaflex · Interne</p>
   <h2>Demandes de soumission</h2>
-  <p>Cette page lit les demandes directement dans votre compte GoHighLevel. Elle ne dépend pas des courriels — vous verrez chaque demande, même quand les courriels ne passent pas.</p>
-  <ol>
-    <li>Dans GoHighLevel : <strong>Settings → Private Integrations → Create new Integration</strong></li>
-    <li>Nommez-la « Site web — lecture des demandes »</li>
-    <li>Cochez uniquement <code>contacts.readonly</code> — lecture seule, rien d’autre</li>
-    <li>Copiez le jeton (il ne s’affiche qu’une seule fois) et collez-le ici</li>
-  </ol>
+  <p>Toutes les demandes envoyées par le formulaire du site, en un seul endroit. Indépendant des courriels.</p>
   <label>
-    <span class="m" style="display:block; margin-bottom:6px; color:var(--ink-2)">Jeton d’intégration privée</span>
-    <input id="tok" type="password" autocomplete="off" spellcheck="false" placeholder="pit-••••••••-••••-••••">
+    <span class="m" style="display:block; margin-bottom:6px; color:var(--ink-2)">Mot de passe</span>
+    <input id="tok" type="password" autocomplete="current-password" spellcheck="false" placeholder="••••••••">
   </label>
-  <p class="note">Le jeton reste dans ce navigateur seulement (<code>localStorage</code>). Il n’est envoyé qu’à GoHighLevel, jamais ailleurs. Sur un ordinateur partagé, utilisez « Oublier le jeton » en partant.</p>
-  <p style="margin:18px 0 0"><button class="btn pri" id="go">Afficher les demandes</button></p>
+  <p class="note">Le mot de passe reste dans ce navigateur. Sur un ordinateur partagé, utilisez « Oublier » en partant.</p>
+  <p style="margin:18px 0 0"><button class="btn pri" id="go">Voir les demandes</button></p>
   <div id="gateErr" class="err hide" style="margin-top:16px"></div>
 </section>
 
@@ -133,7 +127,7 @@ input:focus{outline:2px solid var(--terra); outline-offset:1px; border-color:var
       <span class="spacer"></span>
       <span class="count" id="count"></span>
       <button class="btn" id="refresh">Actualiser</button>
-      <button class="btn ghost" id="forget">Oublier le jeton</button>
+      <button class="btn ghost" id="forget">Oublier</button>
     </div>
   </div>
 
@@ -151,74 +145,19 @@ input:focus{outline:2px solid var(--terra); outline-offset:1px; border-color:var
 <script>
 (function(){
   "use strict";
-  var LOC = "A1Y2JfCdzrvuEDvZsXfy";                 // Multisurfaflex sub-account
-  var API = "https://services.leadconnectorhq.com";
-  var KEY = "msf_ghl_pit";
+  var KEY = "msf_admin_pw";
   var $ = function(id){ return document.getElementById(id); };
+  var state = { pw:"", rows:[], onlyNew:false, onlyPhone:false, q:"" };
 
-  var state = { token:"", rows:[], fields:{}, onlyNew:false, onlyPhone:false, q:"" };
-
-  /* GHL has shipped two Version header values for these endpoints — the
-     Private Integrations docs show 2021-07-28, the search docs say v3. Try
-     each rather than betting on one. */
-  var VERSIONS = ["2021-07-28","v3"];
-
-  function req(path, opts, vi){
-    vi = vi || 0;
-    var o = Object.assign({}, opts);
-    o.headers = Object.assign({
-      "Authorization":"Bearer " + state.token,
-      "Version": VERSIONS[vi],
-      "Accept":"application/json"
-    }, (opts && opts.headers) || {});
-    return fetch(API + path, o).then(function(r){
-      return r.text().then(function(t){
-        var j = null; try { j = JSON.parse(t); } catch(e){}
-        if(r.ok) return j !== null ? j : {};
-        /* a version mismatch reads as 400/401 — try the other one before giving up */
-        if(vi + 1 < VERSIONS.length && (r.status === 400 || r.status === 401 || r.status === 422)){
-          return req(path, opts, vi + 1);
-        }
-        var msg = (j && (j.message || j.error)) || t.slice(0,300) || ("HTTP " + r.status);
-        throw new Error("HTTP " + r.status + " — " + (Array.isArray(msg) ? msg.join("; ") : msg));
+  function fetchRequests(pw){
+    return fetch("/api/requests", { headers:{ "x-admin-password": pw }, cache:"no-store" })
+      .then(function(r){
+        return r.text().then(function(t){
+          var j = null; try { j = JSON.parse(t); } catch(e){}
+          if(!r.ok) throw new Error((j && j.error) || ("HTTP " + r.status));
+          return (j && j.requests) || [];
+        });
       });
-    });
-  }
-
-  function loadFields(){
-    /* names for the custom fields so the card reads "Couleur", not a uuid.
-       Non-fatal: if the scope is missing we just show what we can. */
-    return req("/locations/" + LOC + "/customFields", {method:"GET"})
-      .then(function(j){
-        var arr = (j && (j.customFields || j.fields)) || [];
-        arr.forEach(function(f){ if(f && f.id) state.fields[f.id] = f.name || f.fieldKey || f.id; });
-      })
-      .catch(function(){ /* ignore — cards fall back to raw values */ });
-  }
-
-  function loadContacts(){
-    return req("/contacts/search", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body: JSON.stringify({ locationId: LOC, pageLimit: 100, page: 1,
-                             sort:[{field:"dateAdded", direction:"desc"}] })
-    }).then(function(j){
-      var rows = (j && (j.contacts || j.data)) || [];
-      state.rows = rows;
-      return rows;
-    });
-  }
-
-  function cf(c, name){
-    var list = c.customFields || [];
-    for(var i=0;i<list.length;i++){
-      var id = list[i].id, v = list[i].value;
-      if(v === undefined || v === null || v === "") continue;
-      if((state.fields[id] || "").toLowerCase() === name.toLowerCase()) {
-        return Array.isArray(v) ? v.join(", ") : String(v);
-      }
-    }
-    return "";
   }
 
   function esc(s){ return String(s == null ? "" : s)
@@ -237,35 +176,39 @@ input:focus{outline:2px solid var(--terra); outline-offset:1px; border-color:var
   function tel(p){ return "tel:" + String(p||"").replace(/[^0-9+]/g,""); }
 
   function card(c){
-    var name = [c.firstName, c.lastName].filter(Boolean).join(" ") || c.contactName || c.companyName || "—";
-    var when = c.dateAdded || c.dateUpdated;
+    var when  = c.received_at || c.submitted_at;
     var fresh = when && (Date.now() - Date.parse(when)) < 7*864e5;
     var facts = [
-      ["Service",    cf(c,"Application")],
-      ["Superficie", cf(c,"Area Sqft") ? cf(c,"Area Sqft") + " pi²" : ""],
-      ["Couleur",    cf(c,"Colour")],
-      ["Ville",      c.city || ""],
-      ["Langue",     cf(c,"Language")],
-      ["Source",     c.source || ""]
+      ["Service",    c.application],
+      ["Superficie", c.area_sqft ? c.area_sqft + " pi²" : ""],
+      ["Couleur",    c.colour],
+      ["Ville",      c.city],
+      ["Langue",     c.language],
+      ["Page",       c.page]
     ].filter(function(f){ return f[1]; });
-    var notes = cf(c,"Notes");
 
     var acts = "";
     if(c.phone) acts += '<a class="call" href="'+esc(tel(c.phone))+'">Appeler '+esc(c.phone)+'</a>';
     if(c.email) acts += '<a href="mailto:'+esc(c.email)+'">Courriel</a>';
-    acts += '<a href="https://app.gohighlevel.com/v2/location/'+LOC+'/contacts/detail/'+esc(c.id)+
-            '" target="_blank" rel="noopener">Ouvrir dans GHL</a>';
+
+    /* if the CRM hand-off failed, say so on the card — the lead is safe here
+       but it will not be in GoHighLevel */
+    var warn = c.forwarded_to_crm === false
+      ? '<div class="notes"><p style="color:var(--warn)">⚠ Non transmis au CRM'
+        + (c.crm_error ? " (" + esc(c.crm_error) + ")" : "") + '. La demande est conservée ici.</p></div>'
+      : "";
 
     return '<article class="card'+(fresh?" fresh":"")+'">'
-      + '<div class="c-top"><h2 class="c-name">'+esc(name)+'</h2>'
+      + '<div class="c-top"><h2 class="c-name">'+esc(c.name || "—")+'</h2>'
       + (fresh ? '<span class="c-new">Nouveau</span>' : "")
       + '<span class="spacer"></span><span class="c-when">'+esc(ago(when))+'</span></div>'
-      + '<div class="c-act">'+acts+'</div>'
+      + (acts ? '<div class="c-act">'+acts+'</div>' : "")
       + (facts.length ? '<dl class="facts">' + facts.map(function(f){
             var cls = f[0] === "Langue" ? ' class="lang"' : "";
             return '<div class="fact"><dt>'+esc(f[0])+'</dt><dd'+cls+'>'+esc(f[1])+'</dd></div>';
           }).join("") + '</dl>' : "")
-      + (notes ? '<div class="notes"><p>'+esc(notes)+'</p></div>' : "")
+      + (c.notes ? '<div class="notes"><p>'+esc(c.notes)+'</p></div>' : "")
+      + warn
       + '</article>';
   }
 
@@ -274,11 +217,11 @@ input:focus{outline:2px solid var(--terra); outline-offset:1px; border-color:var
     return state.rows.filter(function(c){
       if(state.onlyPhone && !c.phone) return false;
       if(state.onlyNew){
-        var t = Date.parse(c.dateAdded || c.dateUpdated || 0);
+        var t = Date.parse(c.received_at || c.submitted_at || 0);
         if(isNaN(t) || Date.now() - t > 7*864e5) return false;
       }
       if(!q) return true;
-      return [c.firstName,c.lastName,c.contactName,c.email,c.phone,c.city,c.companyName]
+      return [c.name,c.email,c.phone,c.city,c.application,c.colour,c.notes]
         .filter(Boolean).join(" ").toLowerCase().indexOf(q) > -1;
     });
   }
@@ -291,23 +234,20 @@ input:focus{outline:2px solid var(--terra); outline-offset:1px; border-color:var
     $("count").textContent = rows.length + " / " + state.rows.length + " demande" + (state.rows.length>1?"s":"");
     $("list").innerHTML = rows.length
       ? rows.map(card).join("")
-      : '<div class="empty">Aucune demande ne correspond.</div>';
+      : '<div class="empty">Aucune demande pour l’instant.</div>';
   }
 
   function fail(where, e){
     var el = $(where);
-    el.textContent = "Échec : " + e.message
-      + "\n\nVérifiez que le jeton est une intégration privée de CE sous-compte (Multisurfaflex)"
-      + "\net qu’il a la permission contacts.readonly.";
+    el.textContent = "Échec : " + e.message;
     el.classList.remove("hide");
   }
 
   function boot(){
     $("err").classList.add("hide");
     $("refresh").disabled = true; $("refresh").textContent = "…";
-    return loadFields()
-      .then(loadContacts)
-      .then(render)
+    return fetchRequests(state.pw)
+      .then(function(rows){ state.rows = rows; render(); })
       .catch(function(e){ fail("err", e); })
       .then(function(){ $("refresh").disabled = false; $("refresh").textContent = "Actualiser"; });
   }
@@ -315,17 +255,17 @@ input:focus{outline:2px solid var(--terra); outline-offset:1px; border-color:var
   $("go").addEventListener("click", function(){
     var t = $("tok").value.trim();
     if(!t){ $("tok").focus(); return; }
-    state.token = t;
     $("gateErr").classList.add("hide");
     $("go").disabled = true; $("go").textContent = "Vérification…";
-    loadContacts()
-      .then(function(){
+    fetchRequests(t)
+      .then(function(rows){
+        state.pw = t; state.rows = rows;
         try { localStorage.setItem(KEY, t); } catch(e){}
         $("gate").classList.add("hide"); $("app").classList.remove("hide");
-        return loadFields().then(render);
+        render();
       })
       .catch(function(e){ fail("gateErr", e); })
-      .then(function(){ $("go").disabled = false; $("go").textContent = "Afficher les demandes"; });
+      .then(function(){ $("go").disabled = false; $("go").textContent = "Voir les demandes"; });
   });
   $("tok").addEventListener("keydown", function(e){ if(e.key === "Enter") $("go").click(); });
 
@@ -347,7 +287,7 @@ input:focus{outline:2px solid var(--terra); outline-offset:1px; border-color:var
   /* returning visit on the same browser */
   var saved = null; try { saved = localStorage.getItem(KEY); } catch(e){}
   if(saved){
-    state.token = saved;
+    state.pw = saved;
     $("gate").classList.add("hide"); $("app").classList.remove("hide");
     boot();
   }
