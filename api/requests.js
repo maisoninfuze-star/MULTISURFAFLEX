@@ -35,13 +35,12 @@ module.exports = async function handler(req, res){
            the SDK, which carries the same credentials put() and list() use */
         let text = null;
         try {
-          const g = await get(b.pathname);
-          if (g == null) text = null;
-          else if (typeof g === "string") text = g;
-          else if (typeof g.text === "function") text = await g.text();
-          else if (typeof g.json === "function") text = JSON.stringify(await g.json());
-          else if (g.body) text = await new Response(g.body).text();
-          else if (debug.failures.length < 3) debug.failures.push(b.pathname + " -> shape " + Object.keys(g).join("|"));
+          /* get(pathname, { access }) -> { statusCode, stream, ... } | null
+             useCache:false because a private read otherwise serves up to 60s
+             of CDN cache, and a brand-new lead must never be missing */
+          const g = await get(b.pathname, { access:"private", useCache:false });
+          if (g && g.stream) text = await new Response(g.stream).text();
+          else if (debug.failures.length < 3) debug.failures.push(b.pathname + " -> no stream (status " + (g && g.statusCode) + ")");
         } catch(err){
           if (debug.failures.length < 3) debug.failures.push(b.pathname + " -> " + (err && err.message));
         }
