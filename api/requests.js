@@ -1,6 +1,6 @@
 /* Lists the stored quote requests for the owner's admin page.
  * Password is compared in constant time and never logged. */
-const { list } = require("@vercel/blob");
+const { list, get } = require("@vercel/blob");
 const crypto = require("crypto");
 
 function same(a, b){
@@ -31,15 +31,25 @@ module.exports = async function handler(req, res){
       const page = await list({ prefix:"requests/", limit:1000, cursor });
       debug.listed += page.blobs.length;
       for (const b of page.blobs){
-        const tok = process.env.VERCEL_OIDC_TOKEN || process.env.BLOB_READ_WRITE_TOKEN || "";
-        const r = await fetch(b.url, { headers:{ Authorization: "Bearer " + tok } });
-        if (!r.ok){
-          if (debug.failures.length < 3) debug.failures.push(b.pathname + " -> HTTP " + r.status);
-          continue;
+        /* private store: the blob url is not publicly readable, so go through
+           the SDK, which carries the same credentials put() and list() use */
+        let text = null;
+        try {
+          const g = await get(b.pathname);
+          if (g == null) text = null;
+          else if (typeof g === "string") text = g;
+          else if (typeof g.text === "function") text = await g.text();
+          else if (typeof g.json === "function") text = JSON.stringify(await g.json());
+          else if (g.body) text = await new Response(g.body).text();
+          else if (debug.failures.length < 3) debug.failures.push(b.pathname + " -> shape " + Object.keys(g).join("|"));
+        } catch(err){
+          if (debug.failures.length < 3) debug.failures.push(b.pathname + " -> " + (err && err.message));
         }
+        if (text == null) continue;
         debug.fetched++;
-        const j = await r.json().catch(function(){ return null; });
-        if (j) out.push(j);
+        try { out.push(JSON.parse(text)); } catch(err){
+          if (debug.failures.length < 3) debug.failures.push(b.pathname + " -> bad json");
+        }
       }
       cursor = page.hasMore ? page.cursor : null;
     } while (cursor);
