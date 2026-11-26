@@ -19,34 +19,47 @@ module.exports = async function handler(req, res){
   }
 
   try {
-    const out = [];
+    /* Pathnames are a descending timestamp, and list() returns them in
+       lexicographic order, so the first N are the newest N. Cap the read:
+       the owner wants recent leads, and fetching every blob on every page
+       load is what eventually times the function out. */
+    const want = Math.min(parseInt(req.query && req.query.limit, 10) || 200, 1000);
+
+    const refs = [];
     let cursor;
     do {
       const page = await list({ prefix:"requests/", limit:1000, cursor });
       for (const b of page.blobs){
-        /* private store: the blob url is not publicly readable, so go through
-           the SDK, which carries the same credentials put() and list() use */
-        let text = null;
+        if (refs.length >= want) break;
+        refs.push(b.pathname);
+      }
+      cursor = (refs.length < want && page.hasMore) ? page.cursor : null;
+    } while (cursor);
+
+    /* read in parallel batches — sequential reads are the slow path that
+       turns a long lead list into a timeout */
+    const out = new Array(refs.length).fill(null);
+    const BATCH = 12;
+    for (let i = 0; i < refs.length; i += BATCH){
+      const slice = refs.slice(i, i + BATCH);
+      await Promise.all(slice.map(async function(pathname, k){
         try {
           /* get(pathname, { access }) -> { statusCode, stream, ... } | null
              useCache:false because a private read otherwise serves up to 60s
              of CDN cache, and a brand-new lead must never be missing */
-          const g = await get(b.pathname, { access:"private", useCache:false });
-          if (g && g.stream) text = await new Response(g.stream).text();
+          const g = await get(pathname, { access:"private", useCache:false });
+          if (!g || !g.stream) return;
+          out[i + k] = JSON.parse(await new Response(g.stream).text());
         } catch(err){
-          console.error("read failed:", b.pathname, err && err.message);
+          console.error("read failed:", pathname, err && err.message);
         }
-        if (text == null) continue;
-        try { out.push(JSON.parse(text)); } catch(err){
-          console.error("bad json:", b.pathname);
-        }
-      }
-      cursor = page.hasMore ? page.cursor : null;
-    } while (cursor);
+      }));
+    }
 
-    out.sort(function(a,b){ return String(b.received_at||"").localeCompare(String(a.received_at||"")); });
+    const rows = out.filter(Boolean);
+    rows.sort(function(a,b){ return String(b.received_at||"").localeCompare(String(a.received_at||"")); });
     res.setHeader("Cache-Control","no-store");
-    res.status(200).json({ count: out.length, requests: out });
+    res.status(200).json({ count: rows.length, truncated: rows.length >= want, requests: rows });
   } catch(e){
     res.status(500).json({error: (e && e.message) || "list failed"});
   }
