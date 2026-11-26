@@ -21,7 +21,8 @@ module.exports = async function handler(req, res){
   const debug = { listed:0, fetched:0, failures:[], env:{
     oidc: !!process.env.VERCEL_OIDC_TOKEN,
     rw:   !!process.env.BLOB_READ_WRITE_TOKEN,
-    store:!!process.env.BLOB_STORE_ID } };
+    store:!!process.env.BLOB_STORE_ID,
+    keys: Object.keys(process.env).filter(function(k){ return /BLOB|VERCEL_OIDC|TOKEN/i.test(k); }) } };
 
   try {
     const out = [];
