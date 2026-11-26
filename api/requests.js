@@ -18,16 +18,25 @@ module.exports = async function handler(req, res){
     res.status(401).json({error:"mot de passe invalide"}); return;
   }
 
+  const debug = { listed:0, fetched:0, failures:[], env:{
+    oidc: !!process.env.VERCEL_OIDC_TOKEN,
+    rw:   !!process.env.BLOB_READ_WRITE_TOKEN,
+    store:!!process.env.BLOB_STORE_ID } };
+
   try {
     const out = [];
     let cursor;
     do {
       const page = await list({ prefix:"requests/", limit:1000, cursor });
+      debug.listed += page.blobs.length;
       for (const b of page.blobs){
-        const r = await fetch(b.url, {
-          headers:{ Authorization: "Bearer " + (process.env.VERCEL_OIDC_TOKEN || process.env.BLOB_READ_WRITE_TOKEN || "") }
-        });
-        if (!r.ok) continue;
+        const tok = process.env.VERCEL_OIDC_TOKEN || process.env.BLOB_READ_WRITE_TOKEN || "";
+        const r = await fetch(b.url, { headers:{ Authorization: "Bearer " + tok } });
+        if (!r.ok){
+          if (debug.failures.length < 3) debug.failures.push(b.pathname + " -> HTTP " + r.status);
+          continue;
+        }
+        debug.fetched++;
         const j = await r.json().catch(function(){ return null; });
         if (j) out.push(j);
       }
@@ -36,8 +45,8 @@ module.exports = async function handler(req, res){
 
     out.sort(function(a,b){ return String(b.received_at||"").localeCompare(String(a.received_at||"")); });
     res.setHeader("Cache-Control","no-store");
-    res.status(200).json({ count: out.length, requests: out });
+    res.status(200).json({ count: out.length, requests: out, debug: req.query && req.query.debug ? debug : undefined });
   } catch(e){
-    res.status(500).json({error: (e && e.message) || "list failed"});
+    res.status(500).json({error: (e && e.message) || "list failed", debug});
   }
 };
